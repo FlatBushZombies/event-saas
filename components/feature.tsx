@@ -2,7 +2,7 @@ import FeatureCard from "./feature-card"
 
 export default function Features() {
   return (
-    <section className="py-24">
+    <section className="py-24" id="features">
       <div className="mx-auto max-w-7xl px-6">
         <h2 className="mb-12 text-center text-3xl font-semibold">
           What EventWorkspace handles

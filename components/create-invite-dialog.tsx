@@ -26,6 +26,7 @@ export function CreateInviteDialog({ eventId }: CreateInviteDialogProps) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [inviteLink, setInviteLink] = useState<string | null>(null)
+  const [inviteData, setInviteData] = useState<{ emailSent?: boolean; emailError?: string } | null>(null)
   const [copied, setCopied] = useState(false)
   const router = useRouter()
 

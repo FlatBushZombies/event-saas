@@ -13,20 +13,30 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invite not found" }, { status: 404 })
   }
 
-  const { error } = await supabase
+  // Check if already accepted
+  if (invite.status === "accepted" || invite.status === "scanned") {
+    return NextResponse.json(
+      { error: "Invite already accepted", invite },
+      { status: 400 }
+    )
+  }
+
+  const { data: updatedInvite, error } = await supabase
     .from("invites")
     .update({
       status: "accepted",
-      attendee_name: attendeeName,
-      attendee_email: attendeeEmail,
+      attendee_name: attendeeName || invite.attendee_name,
+      attendee_email: attendeeEmail || invite.attendee_email,
       accepted_at: new Date().toISOString(),
-      qr_code_data: `${inviteCode}`,
+      qr_code_data: inviteCode,
     })
     .eq("invite_code", inviteCode)
+    .select()
+    .single()
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json({ success: true })
+  return NextResponse.json({ success: true, invite: updatedInvite })
 }

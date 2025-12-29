@@ -11,7 +11,10 @@ interface ScanResult {
   success: boolean
   message: string
   attendeeName?: string
+  attendeeEmail?: string
   eventTitle?: string
+  eventDate?: string
+  eventLocation?: string
 }
 
 export function QRScanner() {
@@ -81,9 +84,12 @@ export function QRScanner() {
             if (response.ok) {
               setResult({
                 success: true,
-                message: "Invite Accepted - Check-in successful!",
+                message: "Check-in successful!",
                 attendeeName: data.attendeeName,
+                attendeeEmail: data.attendeeEmail,
                 eventTitle: data.eventTitle,
+                eventDate: data.eventDate,
+                eventLocation: data.eventLocation,
               })
             } else {
               setResult({
@@ -178,9 +184,30 @@ export function QRScanner() {
                 <div className="flex-1">
                   <AlertDescription className="text-sm font-medium">{result.message}</AlertDescription>
                   {result.attendeeName && (
-                    <p className="text-sm text-muted-foreground mt-2">Attendee: {result.attendeeName}</p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      <strong>Attendee:</strong> {result.attendeeName}
+                    </p>
                   )}
-                  {result.eventTitle && <p className="text-sm text-muted-foreground">Event: {result.eventTitle}</p>}
+                  {result.attendeeEmail && (
+                    <p className="text-sm text-muted-foreground">
+                      <strong>Email:</strong> {result.attendeeEmail}
+                    </p>
+                  )}
+                  {result.eventTitle && (
+                    <p className="text-sm text-muted-foreground">
+                      <strong>Event:</strong> {result.eventTitle}
+                    </p>
+                  )}
+                  {result.eventDate && (
+                    <p className="text-sm text-muted-foreground">
+                      <strong>Date:</strong> {new Date(result.eventDate).toLocaleString()}
+                    </p>
+                  )}
+                  {result.eventLocation && (
+                    <p className="text-sm text-muted-foreground">
+                      <strong>Location:</strong> {result.eventLocation}
+                    </p>
+                  )}
                 </div>
               </div>
             </Alert>

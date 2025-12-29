@@ -36,6 +36,9 @@ export async function POST(request: Request) {
   return NextResponse.json({
     success: true,
     attendeeName: invite.attendee_name,
+    attendeeEmail: invite.attendee_email,
     eventTitle: invite.events.title,
+    eventDate: invite.events.event_date,
+    eventLocation: invite.events.location,
   })
 }

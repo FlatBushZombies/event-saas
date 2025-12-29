@@ -1,29 +1,21 @@
-import { createClient } from "@supabase/supabase-js"
+import { createAdminClient } from "@/lib/server-supabase"
+import { notFound } from "next/navigation"
+import { InviteAcceptancePage } from "@/components/invite-acceptance-page"
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+export default async function InvitePage({ params }: { params: Promise<{ code: string }> }) {
+  const { code } = await params
+  const supabase = createAdminClient()
 
-export default async function Invite({ params }: { params: { code: string } }) {
-  const { data } = await supabase
+  // Fetch invite with event details
+  const { data: invite, error } = await supabase
     .from("invites")
-    .select("events(title)")
-    .eq("code", params.code)
+    .select("*, events(*)")
+    .eq("invite_code", code)
     .single()
 
-  if (!data) {
-    return <p className="p-10 text-center">Invalid invite</p>
+  if (error || !invite) {
+    notFound()
   }
 
-  return (
-    <main className="min-h-screen flex items-center justify-center bg-black text-white">
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-10 text-center">
-        <p className="text-white/60 mb-2">You're invited to</p>
-        <h1 className="text-3xl font-semibold">
-          event
-        </h1>
-      </div>
-    </main>
-  )
+  return <InviteAcceptancePage invite={invite} event={invite.events} />
 }

@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EventWorkspace",
+  title: "EventFlow",
   description: "Collaborative event workspaces for teams, communities, and organizations.",
 };
 

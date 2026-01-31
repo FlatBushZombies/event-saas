@@ -1,212 +1,177 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import type React from "react"
+
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Calendar, MapPin, CheckCircle, QrCode, Loader2 } from "lucide-react"
+import { Calendar, MapPin, CheckCircle, ImageIcon } from "lucide-react"
 import { format } from "date-fns"
 import { QRCodeSVG } from "qrcode.react"
-import { toast } from "sonner"
-import type { Event, Invite } from "@/lib/types"
+import { MediaGallery } from "@/components/media-gallery"
 
-interface InviteAcceptancePageProps {
-  invite: Invite & { events: Event }
-  event: Event
+interface InviteAcceptanceProps {
+  invite: {
+    id: string
+    event_id: string
+    invite_code: string
+    status: string
+    attendee_name?: string
+    attendee_email?: string
+    events: {
+      title: string
+      description?: string
+      location?: string
+      event_date: string
+    }
+  }
 }
 
-export function InviteAcceptancePage({ invite: initialInvite, event }: InviteAcceptancePageProps) {
-  const [invite, setInvite] = useState(initialInvite)
+export function InviteAcceptance({ invite }: InviteAcceptanceProps) {
+  const [status, setStatus] = useState(invite.status)
   const [loading, setLoading] = useState(false)
-  const [accepting, setAccepting] = useState(false)
-  const [attendeeName, setAttendeeName] = useState(invite.attendee_name || "")
-  const [attendeeEmail, setAttendeeEmail] = useState(invite.attendee_email || "")
+  const [formData, setFormData] = useState({
+    name: invite.attendee_name || "",
+    email: invite.attendee_email || "",
+  })
 
-  const isAccepted = invite.status === "accepted" || invite.status === "scanned"
-  const [inviteLink, setInviteLink] = useState("")
+  async function handleAccept(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setInviteLink(`${window.location.origin}/invite/${invite.invite_code}`)
+    const response = await fetch("/api/invites/accept", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        inviteCode: invite.invite_code,
+        attendeeName: formData.name,
+        attendeeEmail: formData.email,
+      }),
+    })
+
+    if (response.ok) {
+      setStatus("accepted")
     }
-  }, [invite.invite_code])
 
-  async function handleAccept() {
-    if (!attendeeName.trim() && !attendeeEmail.trim()) {
-      toast.error("Please provide at least your name or email")
-      return
-    }
+    setLoading(false)
+  }
 
-    setAccepting(true)
+  if (status === "accepted" || status === "scanned") {
+    return (
+      <div>
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
+              <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
+            </div>
+            <CardTitle className="text-2xl">Invite Accepted!</CardTitle>
+            <CardDescription>You're all set for {invite.events.title}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-sm">
+                <Calendar className="h-4 w-4 text-muted-foreground" />
+                <span>{format(new Date(invite.events.event_date), "PPP 'at' p")}</span>
+              </div>
+              {invite.events.location && (
+                <div className="flex items-center gap-2 text-sm">
+                  <MapPin className="h-4 w-4 text-muted-foreground" />
+                  <span>{invite.events.location}</span>
+                </div>
+              )}
+            </div>
 
-    try {
-      const response = await fetch("/api/invites/accept", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          inviteCode: invite.invite_code,
-          attendeeName: attendeeName.trim() || null,
-          attendeeEmail: attendeeEmail.trim() || null,
-        }),
-      })
+            <div className="bg-muted p-6 rounded-lg">
+              <p className="text-sm text-center mb-4 font-medium">Your QR Code</p>
+              <div className="flex justify-center">
+                <QRCodeSVG
+                  value={`${window.location.origin}/invite/${invite.invite_code}`}
+                  size={200}
+                  level="H"
+                  includeMargin
+                />
+              </div>
+              <p className="text-xs text-center text-muted-foreground mt-4">
+                Show this QR code at the event for check-in
+              </p>
+            </div>
 
-      const data = await response.json()
+            {status === "scanned" && (
+              <div className="p-4 bg-green-100 dark:bg-green-900/20 rounded-lg text-center">
+                <p className="text-sm font-medium text-green-800 dark:text-green-400">Status: Checked In</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to accept invite")
-      }
-
-      // Refresh to get updated invite with QR code
-      const refreshResponse = await fetch(`/api/invites/${invite.invite_code}`)
-      const refreshedInvite = await refreshResponse.json()
-
-      if (refreshResponse.ok) {
-        setInvite(refreshedInvite)
-        toast.success("Invitation accepted! Your QR code is ready.")
-      } else {
-        // If refresh fails, update local state
-        setInvite({
-          ...invite,
-          status: "accepted",
-          attendee_name: attendeeName.trim() || invite.attendee_name,
-          attendee_email: attendeeEmail.trim() || invite.attendee_email,
-          accepted_at: new Date().toISOString(),
-        })
-        toast.success("Invitation accepted!")
-      }
-    } catch (error) {
-      console.error("Accept invite error:", error)
-      toast.error(error instanceof Error ? error.message : "Failed to accept invite")
-    } finally {
-      setAccepting(false)
-    }
+        <Card className="w-full max-w-2xl mt-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ImageIcon className="h-5 w-5" />
+              Event Media
+            </CardTitle>
+            <CardDescription>Photos and videos shared by the event organizer</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <MediaGallery eventId={invite.event_id} inviteCode={invite.invite_code} />
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl">
-        <CardHeader className="text-center pb-4">
-          <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-            <Calendar className="h-8 w-8 text-primary" />
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle className="text-2xl">You're Invited!</CardTitle>
+        <CardDescription>{invite.events.title}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4 mb-6">
+          {invite.events.description && <p className="text-sm text-muted-foreground">{invite.events.description}</p>}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-sm">
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <span>{format(new Date(invite.events.event_date), "PPP 'at' p")}</span>
+            </div>
+            {invite.events.location && (
+              <div className="flex items-center gap-2 text-sm">
+                <MapPin className="h-4 w-4 text-muted-foreground" />
+                <span>{invite.events.location}</span>
+              </div>
+            )}
           </div>
-          <CardTitle className="text-3xl mb-2">You're Invited!</CardTitle>
-          <p className="text-muted-foreground">Join us for this special event</p>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Event Details */}
-          <div className="bg-muted/50 rounded-lg p-6 space-y-4">
-            <h2 className="text-2xl font-semibold">{event.title}</h2>
-            {event.description && <p className="text-muted-foreground">{event.description}</p>}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-muted-foreground" />
-                <span className="font-medium">
-                  {format(new Date(event.event_date), "EEEE, MMMM d, yyyy 'at' h:mm a")}
-                </span>
-              </div>
-              {event.location && (
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-muted-foreground" />
-                  <span className="font-medium">{event.location}</span>
-                </div>
-              )}
-            </div>
+        </div>
+
+        <form onSubmit={handleAccept} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Your Name</Label>
+            <Input
+              id="name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder="John Doe"
+              required
+            />
           </div>
-
-          {/* Acceptance Form or QR Code */}
-          {!isAccepted ? (
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Accept Your Invitation</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Please provide your details to accept the invitation and receive your QR code.
-                </p>
-              </div>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Your Name</Label>
-                  <Input
-                    id="name"
-                    value={attendeeName}
-                    onChange={(e) => setAttendeeName(e.target.value)}
-                    placeholder="John Doe"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Your Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={attendeeEmail}
-                    onChange={(e) => setAttendeeEmail(e.target.value)}
-                    placeholder="john@example.com"
-                  />
-                </div>
-                <Button onClick={handleAccept} className="w-full" disabled={accepting} size="lg">
-                  {accepting ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Accepting...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      Accept Invitation
-                    </>
-                  )}
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              <div className="text-center">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 mb-4">
-                  <CheckCircle className="h-4 w-4" />
-                  <span className="font-medium">Invitation Accepted</span>
-                </div>
-                {invite.attendee_name && (
-                  <p className="text-lg font-medium mb-2">Welcome, {invite.attendee_name}!</p>
-                )}
-                <p className="text-sm text-muted-foreground">
-                  Your QR code is ready. Show this at the event for check-in.
-                </p>
-              </div>
-
-              {/* QR Code */}
-              {inviteLink && (
-                <div className="flex flex-col items-center space-y-4">
-                  <div className="bg-white p-6 rounded-lg border-2 border-primary/20">
-                    <QRCodeSVG value={inviteLink} size={256} level="H" />
-                  </div>
-                <div className="text-center space-y-2">
-                  <p className="text-sm font-medium">Event Check-in QR Code</p>
-                  <p className="text-xs text-muted-foreground">
-                    Scan this code at the event entrance
-                  </p>
-                </div>
-                </div>
-              )}
-
-              {/* Event Info Summary */}
-              <div className="bg-muted/50 rounded-lg p-4 space-y-2 text-sm">
-                <p>
-                  <strong>Event:</strong> {event.title}
-                </p>
-                <p>
-                  <strong>Date:</strong> {format(new Date(event.event_date), "PPP 'at' p")}
-                </p>
-                {event.location && (
-                  <p>
-                    <strong>Location:</strong> {event.location}
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+          <div className="space-y-2">
+            <Label htmlFor="email">Your Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              placeholder="john@example.com"
+              required
+            />
+          </div>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Accepting..." : "Accept Invitation"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   )
 }
-

@@ -5,6 +5,8 @@ import { DashboardHeader } from "@/components/dashboard-header"
 import { EventDetails } from "@/components/event-details"
 import { InvitesList } from "@/components/invites-list"
 import { CreateInviteDialog } from "@/components/create-invite-dialog"
+import { MediaUpload } from "@/components/media-upload"
+import { MediaGallery } from "@/components/media-gallery"
 
 export default async function EventDetailPage({ params }: { params: Promise<{ eventId: string }> }) {
   const { userId } = await auth()
@@ -34,6 +36,18 @@ export default async function EventDetailPage({ params }: { params: Promise<{ ev
       <DashboardHeader userId={userId} />
       <main className="container mx-auto px-4 py-8">
         <EventDetails event={event} />
+
+        <div className="mt-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold">Event Media</h2>
+              <p className="text-muted-foreground">Share photos and videos with your attendees</p>
+            </div>
+            <MediaUpload eventId={eventId} />
+          </div>
+          <MediaGallery eventId={eventId} canDelete />
+        </div>
+
         <div className="mt-8">
           <div className="flex items-center justify-between mb-6">
             <div>

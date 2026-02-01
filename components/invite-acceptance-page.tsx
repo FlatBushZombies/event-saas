@@ -11,6 +11,7 @@ import { Calendar, MapPin, CheckCircle, ImageIcon } from "lucide-react"
 import { format } from "date-fns"
 import { QRCodeSVG } from "qrcode.react"
 import { MediaGallery } from "@/components/media-gallery"
+import { useEffect } from "react"
 
 interface InviteAcceptanceProps {
   invite: {
@@ -32,30 +33,49 @@ interface InviteAcceptanceProps {
 export function InviteAcceptance({ invite }: InviteAcceptanceProps) {
   const [status, setStatus] = useState(invite.status)
   const [loading, setLoading] = useState(false)
+  const [inviteLink, setInviteLink] = useState<string>("")
   const [formData, setFormData] = useState({
     name: invite.attendee_name || "",
     email: invite.attendee_email || "",
   })
 
+  // Set invite link on client side
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setInviteLink(`${window.location.origin}/invite/${invite.invite_code}`)
+    }
+  }, [invite.invite_code])
+
   async function handleAccept(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
 
-    const response = await fetch("/api/invites/accept", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        inviteCode: invite.invite_code,
-        attendeeName: formData.name,
-        attendeeEmail: formData.email,
-      }),
-    })
+    try {
+      const response = await fetch("/api/invites/accept", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          inviteCode: invite.invite_code,
+          attendeeName: formData.name,
+          attendeeEmail: formData.email,
+        }),
+      })
 
-    if (response.ok) {
-      setStatus("accepted")
+      const data = await response.json()
+
+      if (response.ok) {
+        setStatus("accepted")
+        // Refresh the page to get updated invite data
+        window.location.reload()
+      } else {
+        alert(data.error || "Failed to accept invitation")
+      }
+    } catch (error) {
+      console.error("Accept invite error:", error)
+      alert("Failed to accept invitation. Please try again.")
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
   if (status === "accepted" || status === "scanned") {
@@ -86,12 +106,14 @@ export function InviteAcceptance({ invite }: InviteAcceptanceProps) {
             <div className="bg-muted p-6 rounded-lg">
               <p className="text-sm text-center mb-4 font-medium">Your QR Code</p>
               <div className="flex justify-center">
-                <QRCodeSVG
-                  value={`${window.location.origin}/invite/${invite.invite_code}`}
-                  size={200}
-                  level="H"
-                  includeMargin
-                />
+                {inviteLink && (
+                  <QRCodeSVG
+                    value={inviteLink}
+                    size={200}
+                    level="H"
+                    includeMargin
+                  />
+                )}
               </div>
               <p className="text-xs text-center text-muted-foreground mt-4">
                 Show this QR code at the event for check-in

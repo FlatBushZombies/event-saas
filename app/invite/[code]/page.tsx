@@ -1,6 +1,6 @@
 import { createAdminClient } from "@/lib/server-supabase"
 import { notFound } from "next/navigation"
-import { InviteAcceptancePage } from "@/components/invite-acceptance-page"
+import { InviteAcceptance } from "@/components/invite-acceptance-page"
 
 export default async function InvitePage({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params
@@ -13,9 +13,9 @@ export default async function InvitePage({ params }: { params: Promise<{ code: s
     .eq("invite_code", code)
     .single()
 
-  if (error || !invite) {
+  if (error || !invite || !invite.events) {
     notFound()
   }
 
-  return <InviteAcceptancePage invite={invite} event={invite.events} />
+  return <InviteAcceptance invite={invite} />
 }

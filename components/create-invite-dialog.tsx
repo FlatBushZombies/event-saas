@@ -63,17 +63,17 @@ export function CreateInviteDialog({ eventId }: CreateInviteDialogProps) {
     }
 
     try {
-      const response = await fetch("/api/invites", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          eventId,
+    const response = await fetch("/api/invites", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        eventId,
           attendeeName: attendeeName || null,
           attendeeEmail: attendeeEmail.trim(),
-        }),
-      })
+      }),
+    })
 
-      const data = await response.json()
+    const data = await response.json()
 
       if (!response.ok) {
         throw new Error(data.error || "Failed to create invite")
@@ -178,18 +178,18 @@ export function CreateInviteDialog({ eventId }: CreateInviteDialogProps) {
             <div className="p-4 bg-muted rounded-lg break-all text-sm">{inviteLink}</div>
             <div className="flex gap-2">
               <Button onClick={copyToClipboard} className="flex-1 bg-transparent" variant="outline">
-                {copied ? (
-                  <>
-                    <Check className="h-4 w-4 mr-2" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <Copy className="h-4 w-4 mr-2" />
-                    Copy Link
-                  </>
-                )}
-              </Button>
+              {copied ? (
+                <>
+                  <Check className="h-4 w-4 mr-2" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4 mr-2" />
+                  Copy Link
+                </>
+              )}
+            </Button>
               <Button onClick={handleCreateAnother} variant="outline" className="bg-transparent">
                 Create Another
               </Button>

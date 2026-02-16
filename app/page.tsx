@@ -1,80 +1,36 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Calendar, QrCode, Users, Sparkles, CheckCircle, Zap } from "lucide-react"
+import { Calendar, QrCode, Users, Sparkles, CheckCircle, Zap, ArrowRight } from "lucide-react"
 import Image from "next/image"
+import Navbar from "@/components/navbar"
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Image
-            src="/eventflow-logo.png"
-            width={153}
-            height={102}
-            alt="eventflow logo"
-            className="object-cover"
-            />
-          </div>
-          <nav className="hidden md:flex items-center gap-8">
-            <Link href="#features" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-              Features
-            </Link>
-            <Link
-              href="#how-it-works"
-              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-            >
-              How it Works
-            </Link>
-            <Link href="#pricing" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-              Pricing
-            </Link>
-          </nav>
-          <div className="flex items-center gap-3">
-            <Link href="/sign-in">
-              <Button variant="ghost" size="sm" className="text-foreground">
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/sign-up">
-              <Button size="sm">Get Started</Button>
-            </Link>
-          </div>
-        </div>
-      </header>
-
+    <div className="home">
+          <Navbar />
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 md:py-32">
-        <div className="max-w-4xl mx-auto text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-accent-foreground text-sm font-medium mb-6">
-            <Sparkles className="h-4 w-4" />
-            <span>The future of event management</span>
+      <section className="hero ">
+        <div className="announce">
+          <div className="dot">
+            <div className="pulse">
+            </div>
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 text-balance text-foreground">
-            Create Events,
-            <span className="text-primary"> Share Invites</span>, Track Attendance
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8 text-pretty max-w-2xl mx-auto leading-relaxed">
-            The complete event management platform that transforms how you organize gatherings. Generate QR codes,
-            manage invitations, and track attendees in real-time.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/sign-up">
-              <Button size="lg" className="text-base px-8 shadow-sm hover:shadow-md transition-shadow">
-                Start Free Trial
-              </Button>
-            </Link>
-            <Button
-              size="lg"
-              variant="outline"
-              className="text-base px-8 bg-white border-2 hover:bg-accent hover:text-accent-foreground hover:border-primary transition-all"
-            >
-              Watch Demo
-            </Button>
-          </div>
-          <p className="text-sm text-muted-foreground mt-6">No credit card required • Free 14-day trial</p>
+          <p>Events made effortless</p>
+        </div>
+        <h1>The Future of Event Management Starts Here</h1>
+        <p className="subtitle">
+          Launch events, share digital invites, and scan QR codes for instant entry while tracking attendance in real time. One platform. Total control.
+        </p>
+
+        <div className="actions">
+          <a href="#" className="cta">
+            Start Free Trial <ArrowRight className="icon" />
+          </a>
+          <Link href="#" className="cta">
+            Watch Demo
+          </Link>
         </div>
 
         <div className="max-w-6xl mx-auto mt-16 relative">

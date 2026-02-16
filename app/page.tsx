@@ -83,17 +83,20 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="container mx-auto px-4 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-foreground">Everything you need</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
-            Powerful features designed to make event management effortless
-          </p>
+      <section id="features" className="projects">
+        <div className="section-inner">
+          <div className="section-head">
+            <div className="copy">
+              <h2>Everything you need</h2>
+              <p>Powerful features designed to make event management effortless</p>
+            </div>
+          </div>
+
         </div>
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <div className="bg-white border border-border rounded-2xl p-8 hover:shadow-md hover:border-primary/20 transition-all">
             <div className="h-12 w-12 rounded-xl bg-accent flex items-center justify-center mb-6">
-              <Calendar className="h-6 w-6 text-primary" />
+              <Calendar className="h-6 w-6 text-white" />
             </div>
             <h3 className="text-xl font-semibold mb-3 text-foreground">Easy Event Creation</h3>
             <p className="text-muted-foreground leading-relaxed">
@@ -103,7 +106,7 @@ export default function LandingPage() {
           </div>
           <div className="bg-white border border-border rounded-2xl p-8 hover:shadow-md hover:border-primary/20 transition-all">
             <div className="h-12 w-12 rounded-xl bg-accent flex items-center justify-center mb-6">
-              <QrCode className="h-6 w-6 text-primary" />
+              <QrCode className="h-6 w-6 text-white" />
             </div>
             <h3 className="text-xl font-semibold mb-3 text-foreground">QR Code Generation</h3>
             <p className="text-muted-foreground leading-relaxed">
@@ -112,7 +115,7 @@ export default function LandingPage() {
           </div>
           <div className="bg-white border border-border rounded-2xl p-8 hover:shadow-md hover:border-primary/20 transition-all">
             <div className="h-12 w-12 rounded-xl bg-accent flex items-center justify-center mb-6">
-              <Users className="h-6 w-6 text-primary" />
+              <Users className="h-6 w-6 text-white" />
             </div>
             <h3 className="text-xl font-semibold mb-3 text-foreground">Smart Invitations</h3>
             <p className="text-muted-foreground leading-relaxed">
@@ -122,7 +125,7 @@ export default function LandingPage() {
           </div>
           <div className="bg-white border border-border rounded-2xl p-8 hover:shadow-md hover:border-primary/20 transition-all">
             <div className="h-12 w-12 rounded-xl bg-accent flex items-center justify-center mb-6">
-              <Zap className="h-6 w-6 text-primary" />
+              <Zap className="h-6 w-6 text-white" />
             </div>
             <h3 className="text-xl font-semibold mb-3 text-foreground">Real-time Updates</h3>
             <p className="text-muted-foreground leading-relaxed">
@@ -131,7 +134,7 @@ export default function LandingPage() {
           </div>
           <div className="bg-white border border-border rounded-2xl p-8 hover:shadow-md hover:border-primary/20 transition-all">
             <div className="h-12 w-12 rounded-xl bg-accent flex items-center justify-center mb-6">
-              <CheckCircle className="h-6 w-6 text-primary" />
+              <CheckCircle className="h-6 w-6 text-white" />
             </div>
             <h3 className="text-xl font-semibold mb-3 text-foreground">Check-in Scanner</h3>
             <p className="text-muted-foreground leading-relaxed">
@@ -140,7 +143,7 @@ export default function LandingPage() {
           </div>
           <div className="bg-white border border-border rounded-2xl p-8 hover:shadow-md hover:border-primary/20 transition-all">
             <div className="h-12 w-12 rounded-xl bg-accent flex items-center justify-center mb-6">
-              <Sparkles className="h-6 w-6 text-primary" />
+              <Sparkles className="h-6 w-6 text-white" />
             </div>
             <h3 className="text-xl font-semibold mb-3 text-foreground">Analytics & Insights</h3>
             <p className="text-muted-foreground leading-relaxed">

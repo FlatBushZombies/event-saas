@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EventFlow",
-  description: "Collaborative event workspaces for teams, communities, and organizations.",
+  title: "Wedspace",
+  description: "Your wedding, one private digital workspace — coordinate guests, organize seating, share memories, and celebrate together.",
 };
 
 export default function RootLayout({

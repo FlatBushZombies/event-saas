@@ -1,4 +1,4 @@
-import { Box } from 'lucide-react'
+import { Heart } from 'lucide-react'
 import Link from 'next/link'
 
 const Navbar = () => {
@@ -10,17 +10,17 @@ const Navbar = () => {
         <nav className='inner'>
             <div className='left'>
                 <div className='brand'>
-                    <Box className='logo' />
+                    <Heart className='logo' />
                     <span className='name'>
-                        Evently
+                        Wedspace
                     </span>
                 </div>
 
                 <ul className='links'>
-                    <a href="#">Product</a>
+                    <a href="#features">Features</a>
+                    <a href="#how-it-works">How It Works</a>
                     <a href="#">Pricing</a>
-                    <a href="#">Community</a>
-                    <a href="#">Enteprise</a>
+                    <a href="#">Stories</a>
                 </ul>
             </div>
 

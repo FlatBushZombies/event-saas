@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Calendar, QrCode, Users, Sparkles, CheckCircle, Zap, ArrowRight } from "lucide-react"
+import { Heart, Users, Camera, Grid3X3, PartyPopper, MessageCircleHeart, ArrowRight } from "lucide-react"
 import Image from "next/image"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
@@ -18,25 +18,25 @@ export default function LandingPage() {
             <div className="pulse">
             </div>
           </div>
-          <p>Events made effortless</p>
+          <p>Your wedding, beautifully organized</p>
         </div>
-        <h1>The Future of Event Management Starts Here</h1>
+        <h1>Turn Your Wedding Into a Private Digital Workspace</h1>
         <p className="subtitle">
-          Launch events, share digital invites, and scan QR codes for instant entry while tracking attendance in real time. One platform. Total control.
+          Coordinate guests, organize seating, share photos, and celebrate together — all in one beautiful space made just for your big day.
         </p>
 
         <div className="actions">
-          <a href="#" className="cta">
-            Start Free Trial <ArrowRight className="icon" />
+          <a href="/sign-up" className="cta">
+            Create Your Wedding Space <ArrowRight className="icon" />
           </a>
-          <Link href="#" className="cta">
-            Watch Demo
+          <Link href="#how-it-works" className="cta">
+            See How It Works
           </Link>
         </div>
 
         <div className="max-w-6xl mx-auto mt-16 relative">
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-border">
-            <img src="/modern-event-management-dashboard-with-calendar-an.jpg" alt="EventFlow Dashboard" className="w-full h-auto" />
+            <img src="/modern-event-management-dashboard-with-calendar-an.jpg" alt="Wedspace Dashboard" className="w-full h-auto" />
           </div>
 
           {/* Floating UI Cards */}
@@ -44,18 +44,18 @@ export default function LandingPage() {
             <div className="bg-white rounded-2xl shadow-lg p-6 border border-border w-64">
               <div className="flex items-start gap-3 mb-4">
                 <div className="h-10 w-10 rounded-full bg-accent flex items-center justify-center shrink-0">
-                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <Users className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-foreground mb-1">Action Items</p>
+                  <p className="text-sm font-medium text-foreground mb-1">Guest List</p>
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <div className="h-1 w-1 rounded-full bg-primary"></div>
-                      <span>Send proposals</span>
+                      <span>142 confirmed</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <div className="h-1 w-1 rounded-full bg-muted-foreground"></div>
-                      <span>Schedule follow-up</span>
+                      <span>18 pending RSVPs</span>
                     </div>
                   </div>
                 </div>
@@ -67,14 +67,14 @@ export default function LandingPage() {
             <div className="bg-white rounded-2xl shadow-lg p-6 border border-border w-64">
               <div className="flex items-start gap-3">
                 <div className="h-10 w-10 rounded-full bg-accent flex items-center justify-center shrink-0">
-                  <Sparkles className="h-5 w-5 text-primary" />
+                  <Camera className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-foreground mb-2">AI Summary</p>
+                  <p className="text-sm font-medium text-foreground mb-2">Shared Memories</p>
                   <div className="space-y-1 text-xs text-muted-foreground">
-                    <p>• Review competitor analysis</p>
-                    <p>• Focus on Retention Metrics</p>
-                    <p>• Launch new onboarding flow</p>
+                    <p>• 86 photos uploaded</p>
+                    <p>• 12 video moments</p>
+                    <p>• 34 guest messages</p>
                   </div>
                 </div>
               </div>
@@ -88,8 +88,8 @@ export default function LandingPage() {
         <div className="section-inner">
           <div className="section-head">
             <div className="copy">
-              <h2>Everything you need</h2>
-              <p>Powerful features designed to make event management effortless</p>
+              <h2>Everything your wedding needs</h2>
+              <p>One workspace to plan, coordinate, and celebrate your perfect day</p>
             </div>
           </div>
 
@@ -97,58 +97,56 @@ export default function LandingPage() {
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <div className="bg-white border border-border rounded-2xl p-8 hover:shadow-md hover:border-primary/20 transition-all">
             <div className="h-12 w-12 rounded-xl bg-accent flex items-center justify-center mb-6">
-              <Calendar className="h-6 w-6 text-white" />
-            </div>
-            <h3 className="text-xl font-semibold mb-3 text-foreground">Easy Event Creation</h3>
-            <p className="text-muted-foreground leading-relaxed">
-              Create beautiful events in seconds with our intuitive dashboard. Set date, time, location, and customize
-              every detail.
-            </p>
-          </div>
-          <div className="bg-white border border-border rounded-2xl p-8 hover:shadow-md hover:border-primary/20 transition-all">
-            <div className="h-12 w-12 rounded-xl bg-accent flex items-center justify-center mb-6">
-              <QrCode className="h-6 w-6 text-white" />
-            </div>
-            <h3 className="text-xl font-semibold mb-3 text-foreground">QR Code Generation</h3>
-            <p className="text-muted-foreground leading-relaxed">
-              Automatic QR code generation for each invite. Attendees can easily check-in by scanning their unique code.
-            </p>
-          </div>
-          <div className="bg-white border border-border rounded-2xl p-8 hover:shadow-md hover:border-primary/20 transition-all">
-            <div className="h-12 w-12 rounded-xl bg-accent flex items-center justify-center mb-6">
               <Users className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-xl font-semibold mb-3 text-foreground">Smart Invitations</h3>
+            <h3 className="text-xl font-semibold mb-3 text-foreground">Guest Coordination</h3>
             <p className="text-muted-foreground leading-relaxed">
-              Share invite links that capture attendee info automatically. Track RSVPs and manage your guest list
-              effortlessly.
+              Send digital invites, track RSVPs in real time, and manage your entire guest list from one dashboard. No spreadsheet chaos.
             </p>
           </div>
           <div className="bg-white border border-border rounded-2xl p-8 hover:shadow-md hover:border-primary/20 transition-all">
             <div className="h-12 w-12 rounded-xl bg-accent flex items-center justify-center mb-6">
-              <Zap className="h-6 w-6 text-white" />
+              <Grid3X3 className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-xl font-semibold mb-3 text-foreground">Real-time Updates</h3>
+            <h3 className="text-xl font-semibold mb-3 text-foreground">Seating Organization</h3>
             <p className="text-muted-foreground leading-relaxed">
-              Get instant notifications when attendees accept invites or check in. Stay informed every step of the way.
+              Drag-and-drop seating charts that make table assignments effortless. Group families, friends, and plus-ones with ease.
             </p>
           </div>
           <div className="bg-white border border-border rounded-2xl p-8 hover:shadow-md hover:border-primary/20 transition-all">
             <div className="h-12 w-12 rounded-xl bg-accent flex items-center justify-center mb-6">
-              <CheckCircle className="h-6 w-6 text-white" />
+              <Camera className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-xl font-semibold mb-3 text-foreground">Check-in Scanner</h3>
+            <h3 className="text-xl font-semibold mb-3 text-foreground">Shared Wedding Memories</h3>
             <p className="text-muted-foreground leading-relaxed">
-              Built-in QR scanner for seamless check-ins. Verify attendees instantly and update status in real-time.
+              Guests upload photos and videos to a shared album in real time. Every moment captured, all in one beautiful gallery.
             </p>
           </div>
           <div className="bg-white border border-border rounded-2xl p-8 hover:shadow-md hover:border-primary/20 transition-all">
             <div className="h-12 w-12 rounded-xl bg-accent flex items-center justify-center mb-6">
-              <Sparkles className="h-6 w-6 text-white" />
+              <PartyPopper className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-xl font-semibold mb-3 text-foreground">Analytics & Insights</h3>
+            <h3 className="text-xl font-semibold mb-3 text-foreground">Interactive Celebrations</h3>
             <p className="text-muted-foreground leading-relaxed">
-              Track attendance rates, analyze trends, and make data-driven decisions for future events.
+              Live polls, guestbook messages, song requests, and celebration countdowns that bring everyone together before and during the big day.
+            </p>
+          </div>
+          <div className="bg-white border border-border rounded-2xl p-8 hover:shadow-md hover:border-primary/20 transition-all">
+            <div className="h-12 w-12 rounded-xl bg-accent flex items-center justify-center mb-6">
+              <Heart className="h-6 w-6 text-white" />
+            </div>
+            <h3 className="text-xl font-semibold mb-3 text-foreground">Private Wedding Space</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Each wedding gets its own private workspace — only invited guests can access it. Your celebration, your space.
+            </p>
+          </div>
+          <div className="bg-white border border-border rounded-2xl p-8 hover:shadow-md hover:border-primary/20 transition-all">
+            <div className="h-12 w-12 rounded-xl bg-accent flex items-center justify-center mb-6">
+              <MessageCircleHeart className="h-6 w-6 text-white" />
+            </div>
+            <h3 className="text-xl font-semibold mb-3 text-foreground">Couple & Guest Messaging</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Send updates, share schedules, and let guests leave heartfelt wishes — all within your wedding workspace.
             </p>
           </div>
         </div>
@@ -159,7 +157,7 @@ export default function LandingPage() {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold mb-4 text-foreground">How it works</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
-            Get started in three simple steps
+            From setup to celebration in three simple steps
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-12 max-w-5xl mx-auto">
@@ -167,27 +165,27 @@ export default function LandingPage() {
             <div className="h-16 w-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-sm">
               1
             </div>
-            <h3 className="text-xl font-semibold mb-3 text-foreground">Create Your Event</h3>
+            <h3 className="text-xl font-semibold mb-3 text-foreground">Create Your Wedding Space</h3>
             <p className="text-muted-foreground leading-relaxed">
-              Sign up and create your first event with all the essential details in minutes
+              Sign up and set up your private wedding workspace with your details, date, and story in minutes
             </p>
           </div>
           <div className="text-center">
             <div className="h-16 w-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-sm">
               2
             </div>
-            <h3 className="text-xl font-semibold mb-3 text-foreground">Share Invites</h3>
+            <h3 className="text-xl font-semibold mb-3 text-foreground">Invite Your Guests</h3>
             <p className="text-muted-foreground leading-relaxed">
-              Generate and share unique invite links with your guests via email or social media
+              Send beautiful digital invitations and let guests RSVP, view seating, and join the celebration space
             </p>
           </div>
           <div className="text-center">
             <div className="h-16 w-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-sm">
               3
             </div>
-            <h3 className="text-xl font-semibold mb-3 text-foreground">Scan QR Codes</h3>
+            <h3 className="text-xl font-semibold mb-3 text-foreground">Celebrate Together</h3>
             <p className="text-muted-foreground leading-relaxed">
-              Attendees check in by scanning their unique QR code. Track everything in real-time
+              Share photos, exchange messages, and relive every moment together in your shared wedding gallery
             </p>
           </div>
         </div>
@@ -196,9 +194,9 @@ export default function LandingPage() {
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto text-center bg-primary text-primary-foreground rounded-3xl p-12 md:p-16 shadow-lg">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-balance">Ready to transform your events?</h2>
+          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-balance">Ready to plan your perfect wedding?</h2>
           <p className="text-lg mb-8 opacity-90 text-pretty max-w-2xl mx-auto">
-            Join thousands of event organizers who trust EventFlow for their event management needs
+            Join thousands of couples who trust Wedspace to bring their wedding day to life
           </p>
           <Link href="/sign-up">
             <Button
@@ -206,7 +204,7 @@ export default function LandingPage() {
               variant="secondary"
               className="text-base px-8 bg-white text-primary hover:bg-white/90 shadow-md"
             >
-              Get Started Now
+              Create Your Wedding Space
             </Button>
           </Link>
         </div>

@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Calendar } from "lucide-react"
+import { Heart } from "lucide-react"
 
 export default function Footer() {
   return (
@@ -18,13 +18,13 @@ export default function Footer() {
             <div className="flex items-center gap-3">
             
               <span className="text-xl font-semibold tracking-tight">
-                Evently
+                Wedspace
               </span>
             </div>
 
             <p className="text-white/55 text-sm leading-relaxed max-w-md">
-              Plan, automate, and scale events with precision.
-              Built for modern teams who move fast.
+              Your wedding, one private digital workspace.
+              Coordinate guests, organize seating, and share every memory.
             </p>
 
             <Link
@@ -40,17 +40,17 @@ export default function Footer() {
           {[
             {
               title: "Product",
-              links: ["Features", "Pricing", "Integrations", "Roadmap"]
+              links: ["Features", "Pricing", "Guest Coordination", "Seating Planner"]
             },
             {
               title: "Company",
-              links: ["About", "Blog", "Careers", "Contact"]
+              links: ["About", "Blog", "Love Stories", "Contact"]
             },
             {
               title: "Resources",
-              links: ["Docs", "Help Center", "API", "Community"]
+              links: ["Help Center", "Planning Guides", "FAQs", "Community"]
             }
-          ].map((col) => (
+          ]
             <div key={col.title} className="space-y-5">
               <h4 className="text-xs tracking-widest uppercase text-white/40">
                 {col.title}
@@ -75,7 +75,7 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="mt-20 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-white/40">
-          <p>© {new Date().getFullYear()} Evently Inc. All rights reserved.</p>
+          <p> {new Date().getFullYear()} Wedspace Inc. All rights reserved.</p>
 
           <div className="flex gap-8">
             <Link href="/privacy" className="hover:text-white transition">Privacy</Link>

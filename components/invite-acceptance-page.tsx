@@ -7,10 +7,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Calendar, MapPin, CheckCircle, ImageIcon } from "lucide-react"
+import { Calendar, MapPin, CheckCircle, ImageIcon, BarChart3 } from "lucide-react"
 import { format } from "date-fns"
 import { QRCodeSVG } from "qrcode.react"
 import { MediaGallery } from "@/components/media-gallery"
+import { GuestPolls } from "@/components/guest-polls"
 import { useEffect } from "react"
 
 interface InviteAcceptanceProps {
@@ -125,6 +126,19 @@ export function InviteAcceptance({ invite }: InviteAcceptanceProps) {
                 <p className="text-sm font-medium text-green-800 dark:text-green-400">Status: Checked In</p>
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        <Card className="w-full max-w-2xl mt-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5" />
+              Wedding Polls
+            </CardTitle>
+            <CardDescription>Vote on fun questions and see what other guests think!</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <GuestPolls eventId={invite.event_id} inviteCode={invite.invite_code} />
           </CardContent>
         </Card>
 

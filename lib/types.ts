@@ -33,3 +33,26 @@ export interface Media {
   caption?: string
   created_at: string
 }
+
+export interface Poll {
+  id: string
+  event_id: string
+  question: string
+  options: string[]
+  is_active: boolean
+  created_at: string
+}
+
+export interface PollWithVotes extends Poll {
+  votes: number[]
+  total_votes: number
+  user_vote?: number | null
+}
+
+export interface PollVote {
+  id: string
+  poll_id: string
+  invite_id: string
+  option_index: number
+  created_at: string
+}

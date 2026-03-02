@@ -7,6 +7,8 @@ import { InvitesList } from "@/components/invites-list"
 import { CreateInviteDialog } from "@/components/create-invite-dialog"
 import { MediaUpload } from "@/components/media-upload"
 import { MediaGallery } from "@/components/media-gallery"
+import { PollsList } from "@/components/polls-list"
+import { CreatePollDialog } from "@/components/create-poll-dialog"
 
 export default async function EventDetailPage({ params }: { params: Promise<{ eventId: string }> }) {
   const { userId } = await auth()
@@ -46,6 +48,17 @@ export default async function EventDetailPage({ params }: { params: Promise<{ ev
             <MediaUpload eventId={eventId} />
           </div>
           <MediaGallery eventId={eventId} canDelete />
+        </div>
+
+        <div className="mt-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold">Wedding Polls</h2>
+              <p className="text-muted-foreground">Engage your guests with fun questions and predictions</p>
+            </div>
+            <CreatePollDialog eventId={eventId} />
+          </div>
+          <PollsList eventId={eventId} />
         </div>
 
         <div className="mt-8">

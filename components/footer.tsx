@@ -50,7 +50,7 @@ export default function Footer() {
               title: "Resources",
               links: ["Help Center", "Planning Guides", "FAQs", "Community"]
             }
-          ]
+          ].map((col) => (
             <div key={col.title} className="space-y-5">
               <h4 className="text-xs tracking-widest uppercase text-white/40">
                 {col.title}

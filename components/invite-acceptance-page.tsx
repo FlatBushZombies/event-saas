@@ -2,17 +2,17 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Calendar, MapPin, CheckCircle, ImageIcon, BarChart3 } from "lucide-react"
+import { Calendar, MapPin, ImageIcon, BarChart3 } from "lucide-react"
 import { format } from "date-fns"
-import { QRCodeSVG } from "qrcode.react"
 import { MediaGallery } from "@/components/media-gallery"
 import { GuestPolls } from "@/components/guest-polls"
-import { useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { WeddingInvitationReveal } from "@/components/wedding-invitation-reveal"
 
 interface InviteAcceptanceProps {
   invite: {
@@ -35,6 +35,7 @@ export function InviteAcceptance({ invite }: InviteAcceptanceProps) {
   const [status, setStatus] = useState(invite.status)
   const [loading, setLoading] = useState(false)
   const [inviteLink, setInviteLink] = useState<string>("")
+  const router = useRouter()
   const [formData, setFormData] = useState({
     name: invite.attendee_name || "",
     email: invite.attendee_email || "",
@@ -66,8 +67,8 @@ export function InviteAcceptance({ invite }: InviteAcceptanceProps) {
 
       if (response.ok) {
         setStatus("accepted")
-        // Refresh the page to get updated invite data
-        window.location.reload()
+        // Refresh server data without hard reload (keeps animation smooth)
+        router.refresh()
       } else {
         alert(data.error || "Failed to accept invitation")
       }
@@ -81,55 +82,29 @@ export function InviteAcceptance({ invite }: InviteAcceptanceProps) {
 
   if (status === "accepted" || status === "scanned") {
     return (
-      <div>
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
-              <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
-            </div>
-            <CardTitle className="text-2xl">Invite Accepted!</CardTitle>
-            <CardDescription>You're all set for {invite.events.title}</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-sm">
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span>{format(new Date(invite.events.event_date), "PPP 'at' p")}</span>
-              </div>
-              {invite.events.location && (
-                <div className="flex items-center gap-2 text-sm">
-                  <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span>{invite.events.location}</span>
-                </div>
-              )}
-            </div>
+      <div className="space-y-6">
+        <WeddingInvitationReveal
+          title={invite.events.title}
+          eventDateISO={invite.events.event_date}
+          location={invite.events.location}
+          attendeeName={invite.attendee_name || formData.name}
+          inviteLink={inviteLink}
+          onDone={() => {
+            try {
+              window.sessionStorage.setItem(`invite-reveal-seen:${invite.invite_code}`, "1")
+            } catch {
+              // ignore
+            }
+          }}
+        />
 
-            <div className="bg-muted p-6 rounded-lg">
-              <p className="text-sm text-center mb-4 font-medium">Your QR Code</p>
-              <div className="flex justify-center">
-                {inviteLink && (
-                  <QRCodeSVG
-                    value={inviteLink}
-                    size={200}
-                    level="H"
-                    includeMargin
-                  />
-                )}
-              </div>
-              <p className="text-xs text-center text-muted-foreground mt-4">
-                Show this QR code at the event for check-in
-              </p>
-            </div>
+        {status === "scanned" && (
+          <div className="max-w-xl rounded-2xl border border-green-200 dark:border-green-900 bg-green-50 dark:bg-green-950/30 p-4">
+            <p className="text-sm font-medium text-green-800 dark:text-green-300">Status: Checked in</p>
+          </div>
+        )}
 
-            {status === "scanned" && (
-              <div className="p-4 bg-green-100 dark:bg-green-900/20 rounded-lg text-center">
-                <p className="text-sm font-medium text-green-800 dark:text-green-400">Status: Checked In</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="w-full max-w-2xl mt-6">
+        <Card className="w-full max-w-2xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BarChart3 className="h-5 w-5" />
@@ -142,7 +117,7 @@ export function InviteAcceptance({ invite }: InviteAcceptanceProps) {
           </CardContent>
         </Card>
 
-        <Card className="w-full max-w-2xl mt-6">
+        <Card className="w-full max-w-2xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <ImageIcon className="h-5 w-5" />

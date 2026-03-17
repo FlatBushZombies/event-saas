@@ -56,3 +56,15 @@ export interface PollVote {
   option_index: number
   created_at: string
 }
+
+export interface GuestbookEntry {
+  id: string
+  event_id: string
+  invite_id: string
+  attendee_name?: string | null
+  attendee_email?: string | null
+  message: string
+  photo_path?: string | null
+  created_at: string
+  updated_at?: string
+}

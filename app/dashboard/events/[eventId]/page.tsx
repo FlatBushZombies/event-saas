@@ -9,6 +9,7 @@ import { MediaUpload } from "@/components/media-upload"
 import { MediaGallery } from "@/components/media-gallery"
 import { PollsList } from "@/components/polls-list"
 import { CreatePollDialog } from "@/components/create-poll-dialog"
+import { Guestbook } from "@/components/guestbook"
 
 export default async function EventDetailPage({ params }: { params: Promise<{ eventId: string }> }) {
   const { userId } = await auth()
@@ -59,6 +60,16 @@ export default async function EventDetailPage({ params }: { params: Promise<{ ev
             <CreatePollDialog eventId={eventId} />
           </div>
           <PollsList eventId={eventId} />
+        </div>
+
+        <div className="mt-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold">Guestbook</h2>
+              <p className="text-muted-foreground">Read guest messages and export the full book as PDF</p>
+            </div>
+          </div>
+          <Guestbook mode="owner" eventId={eventId} />
         </div>
 
         <div className="mt-8">

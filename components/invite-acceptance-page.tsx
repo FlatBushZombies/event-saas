@@ -13,6 +13,7 @@ import { MediaGallery } from "@/components/media-gallery"
 import { GuestPolls } from "@/components/guest-polls"
 import { useRouter } from "next/navigation"
 import { WeddingInvitationReveal } from "@/components/wedding-invitation-reveal"
+import { Guestbook } from "@/components/guestbook"
 
 interface InviteAcceptanceProps {
   invite: {
@@ -114,6 +115,21 @@ export function InviteAcceptance({ invite }: InviteAcceptanceProps) {
           </CardHeader>
           <CardContent>
             <GuestPolls eventId={invite.event_id} inviteCode={invite.invite_code} />
+          </CardContent>
+        </Card>
+
+        <Card className="w-full max-w-2xl">
+          <CardHeader>
+            <CardTitle>Digital Guestbook</CardTitle>
+            <CardDescription>Leave a personal message and export it as a keepsake PDF.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Guestbook
+              mode="guest"
+              eventId={invite.event_id}
+              inviteCode={invite.invite_code}
+              attendeeName={invite.attendee_name || formData.name}
+            />
           </CardContent>
         </Card>
 

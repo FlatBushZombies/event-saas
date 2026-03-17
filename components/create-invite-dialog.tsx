@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,7 +13,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Plus, Copy, Check, Mail } from "lucide-react"
+import { Plus, Copy, Check, Mail, User, Sparkles, Send } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
@@ -30,15 +29,8 @@ export function CreateInviteDialog({ eventId }: CreateInviteDialogProps) {
   const [copied, setCopied] = useState(false)
   const router = useRouter()
 
-  // Debug: Log when component mounts and eventId changes
-  useEffect(() => {
-    console.log("CreateInviteDialog mounted with eventId:", eventId)
-  }, [eventId])
-
-  // Reset form when dialog closes
   useEffect(() => {
     if (!open) {
-      // Small delay to allow close animation
       const timer = setTimeout(() => {
         setInviteLink(null)
         setInviteData(null)
@@ -63,17 +55,17 @@ export function CreateInviteDialog({ eventId }: CreateInviteDialogProps) {
     }
 
     try {
-    const response = await fetch("/api/invites", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        eventId,
+      const response = await fetch("/api/invites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          eventId,
           attendeeName: attendeeName || null,
           attendeeEmail: attendeeEmail.trim(),
-      }),
-    })
+        }),
+      })
 
-    const data = await response.json()
+      const data = await response.json()
 
       if (!response.ok) {
         throw new Error(data.error || "Failed to create invite")
@@ -84,23 +76,12 @@ export function CreateInviteDialog({ eventId }: CreateInviteDialogProps) {
       setInviteData(data)
 
       if (data.emailSent) {
-        toast.success("Invite created and email sent successfully!")
-      } else if (data.emailError === "not_configured") {
-        toast.success("Invite created successfully! Email not sent (RESEND_API_KEY not configured)", {
-          description: "You can share the invite link manually.",
-          duration: 5000,
-        })
+        toast.success("Invite created and email sent!")
       } else {
-        toast.success("Invite created successfully!", {
-          description: data.emailError ? `Email not sent: ${data.emailError}` : "You can share the invite link manually.",
-          duration: 5000,
-        })
+        toast.success("Invite created successfully!")
       }
 
-      // Reset form
       e.currentTarget.reset()
-      
-      // Refresh the page to show new invite in the list
       router.refresh()
     } catch (error) {
       console.error("Create invite error:", error)
@@ -114,13 +95,9 @@ export function CreateInviteDialog({ eventId }: CreateInviteDialogProps) {
     if (inviteLink) {
       navigator.clipboard.writeText(inviteLink)
       setCopied(true)
+      toast.success("Link copied to clipboard")
       setTimeout(() => setCopied(false), 2000)
     }
-  }
-
-  function handleOpenChange(newOpen: boolean) {
-    console.log("Dialog open state changing to:", newOpen)
-    setOpen(newOpen)
   }
 
   function handleCreateAnother() {
@@ -130,95 +107,159 @@ export function CreateInviteDialog({ eventId }: CreateInviteDialogProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button type="button">
-          <Plus className="h-4 w-4 mr-2" />
+        <Button 
+          type="button"
+          className="gap-2 rounded-full px-5 py-5 font-medium shadow-md hover:shadow-lg transition-all"
+        >
+          <Plus className="h-4 w-4" />
           Create Invite
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>{inviteLink ? "Invite Created" : "Create New Invite"}</DialogTitle>
-          <DialogDescription>
-            {inviteLink ? "Share this link with your attendee" : "Enter attendee information"}
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-[520px] rounded-2xl border-border/50 p-0 overflow-hidden">
+        {/* Header with decorative element */}
+        <div className="relative bg-muted/30 px-6 pt-8 pb-6">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/5 to-transparent rounded-bl-full" />
+          <div className="relative">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 border border-primary/20 mb-4">
+              {inviteLink ? <Check className="h-5 w-5 text-primary" /> : <Send className="h-5 w-5 text-primary" />}
+            </div>
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-serif font-semibold">
+                {inviteLink ? "Invitation Sent" : "Send Invitation"}
+              </DialogTitle>
+              <DialogDescription className="text-muted-foreground">
+                {inviteLink 
+                  ? "Share this link with your guest or they'll receive an email" 
+                  : "Enter your guest's details to send them an invitation"
+                }
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+        </div>
+
         {inviteLink ? (
-          <div className="space-y-4">
+          <div className="px-6 pb-6 pt-2 space-y-5">
             {inviteData?.emailSent ? (
-              <div className="p-4 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg">
-                <div className="flex items-start gap-2">
-                  <Mail className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5" />
+              <div className="p-4 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-xl">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center flex-shrink-0">
+                    <Mail className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  </div>
                   <div className="flex-1">
                     <p className="text-sm font-medium text-green-900 dark:text-green-100">
-                      Invitation email sent!
+                      Email sent successfully
                     </p>
                     <p className="text-xs text-green-700 dark:text-green-300 mt-1">
-                      The attendee will receive an email with the invitation link.
+                      Your guest will receive the invitation in their inbox.
                     </p>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg">
-                <div className="flex items-start gap-2">
-                  <Mail className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5" />
+              <div className="p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  </div>
                   <div className="flex-1">
                     <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                      Invite created successfully!
+                      Invite created
                     </p>
                     <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                      Email not sent (RESEND_API_KEY not configured). Share the link below manually.
+                      Share the link below with your guest manually.
                     </p>
                   </div>
                 </div>
               </div>
             )}
-            <div className="p-4 bg-muted rounded-lg break-all text-sm">{inviteLink}</div>
-            <div className="flex gap-2">
-              <Button onClick={copyToClipboard} className="flex-1 bg-transparent" variant="outline">
-              {copied ? (
-                <>
-                  <Check className="h-4 w-4 mr-2" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <Copy className="h-4 w-4 mr-2" />
-                  Copy Link
-                </>
-              )}
-            </Button>
-              <Button onClick={handleCreateAnother} variant="outline" className="bg-transparent">
+
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Invitation Link</Label>
+              <div className="p-4 bg-muted/50 rounded-xl border border-border/50 break-all text-sm font-mono">
+                {inviteLink}
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <Button 
+                onClick={handleCreateAnother} 
+                variant="outline"
+                className="flex-1 rounded-full h-11 border-border/60"
+              >
+                <Plus className="h-4 w-4 mr-2" />
                 Create Another
+              </Button>
+              <Button 
+                onClick={copyToClipboard} 
+                className="flex-1 rounded-full h-11 shadow-sm"
+              >
+                {copied ? (
+                  <>
+                    <Check className="h-4 w-4 mr-2" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-4 w-4 mr-2" />
+                    Copy Link
+                  </>
+                )}
               </Button>
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="px-6 pb-6 pt-2 space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="attendeeName">Attendee Name</Label>
-              <Input id="attendeeName" name="attendeeName" placeholder="John Doe" />
+              <Label htmlFor="attendeeName" className="text-sm font-medium flex items-center gap-2">
+                <User className="h-3.5 w-3.5 text-muted-foreground" />
+                Guest Name
+                <span className="text-muted-foreground font-normal">(optional)</span>
+              </Label>
+              <Input 
+                id="attendeeName" 
+                name="attendeeName" 
+                placeholder="Jane Smith"
+                className="rounded-xl border-border/60 focus:border-primary/40 h-11"
+              />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="attendeeEmail">
-                Attendee Email <span className="text-muted-foreground">(required for email invite)</span>
+              <Label htmlFor="attendeeEmail" className="text-sm font-medium flex items-center gap-2">
+                <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+                Email Address
               </Label>
               <Input
                 id="attendeeEmail"
                 name="attendeeEmail"
                 type="email"
-                placeholder="john@example.com"
+                placeholder="jane@example.com"
                 required
+                className="rounded-xl border-border/60 focus:border-primary/40 h-11"
               />
-              <p className="text-xs text-muted-foreground">
-                An invitation email with a link will be sent to this address
+              <p className="text-xs text-muted-foreground pl-1">
+                We&apos;ll send an invitation email with a personal link
               </p>
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Creating..." : "Create Invite"}
-            </Button>
+
+            <div className="flex gap-3 pt-2">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setOpen(false)}
+                className="flex-1 rounded-full h-11 border-border/60"
+              >
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                disabled={loading}
+                className="flex-1 rounded-full h-11 shadow-sm"
+              >
+                {loading ? "Sending..." : "Send Invitation"}
+              </Button>
+            </div>
           </form>
         )}
       </DialogContent>

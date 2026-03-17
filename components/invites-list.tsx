@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Mail, User, Copy, Check, Download } from "lucide-react"
 import { format } from "date-fns"
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { QRCodeSVG } from "qrcode.react"
 
 interface InvitesListProps {
@@ -16,9 +16,24 @@ interface InvitesListProps {
 
 export function InvitesList({ invites }: InvitesListProps) {
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [origin, setOrigin] = useState<string>("")
+
+  useEffect(() => {
+    setOrigin(window.location.origin)
+  }, [])
+
+  const inviteLinkByCode = useMemo(() => {
+    const map = new Map<string, string>()
+    if (!origin) return map
+    for (const inv of invites) {
+      map.set(inv.invite_code, `${origin}/invite/${inv.invite_code}`)
+    }
+    return map
+  }, [invites, origin])
 
   function copyInviteLink(inviteCode: string, id: string) {
-    const link = `${window.location.origin}/invite/${inviteCode}`
+    const link = inviteLinkByCode.get(inviteCode) || ""
+    if (!link) return
     navigator.clipboard.writeText(link)
     setCopiedId(id)
     setTimeout(() => setCopiedId(null), 2000)
@@ -74,12 +89,14 @@ export function InvitesList({ invites }: InvitesListProps) {
                 {invite.status}
               </Badge>
               <div className="hidden">
-                <QRCodeSVG
-                  id={`qr-${invite.invite_code}`}
-                  value={`${window.location.origin}/invite/${invite.invite_code}`}
-                  size={256}
-                  level="H"
-                />
+                {origin ? (
+                  <QRCodeSVG
+                    id={`qr-${invite.invite_code}`}
+                    value={inviteLinkByCode.get(invite.invite_code) || ""}
+                    size={256}
+                    level="H"
+                  />
+                ) : null}
               </div>
             </div>
 

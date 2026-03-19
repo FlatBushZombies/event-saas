@@ -558,13 +558,7 @@ export default function LandingPage() {
           <div className="text-center max-w-4xl mx-auto">
 
             {/* Badge */}
-            <div style={heroFade(0)} className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full mb-10 border"
-              css_style={{
-                background: "rgba(255,250,252,0.85)",
-                borderColor: "rgba(100,150,210,0.25)",
-                backdropFilter: "blur(8px)",
-                boxShadow: "0 2px 16px rgba(80,130,200,0.08), inset 0 1px 0 rgba(255,255,255,0.8)",
-              }}>
+            <div style={{ ...heroFade(0), background: "rgba(248,251,255,0.85)", borderColor: "rgba(100,150,210,0.25)", backdropFilter: "blur(8px)", boxShadow: "0 2px 16px rgba(80,130,200,0.08), inset 0 1px 0 rgba(255,255,255,0.8)" }} className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full mb-10 border">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: "#7aaad8" }} />
                 <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: "#4878c8" }} />
@@ -575,8 +569,7 @@ export default function LandingPage() {
             </div>
 
             {/* Headline */}
-            <h1 style={heroFade(120)} className="font-serif text-5xl md:text-7xl lg:text-8xl font-light leading-[1.05] tracking-tight mb-8 text-balance"
-              css_style={{ color: "#1a2a3a", letterSpacing: "-0.03em" }}>
+            <h1 style={{ ...heroFade(120), color: "#1a2a3a", letterSpacing: "-0.03em" }} className="font-serif text-5xl md:text-7xl lg:text-8xl font-light leading-[1.05] tracking-tight mb-8 text-balance">
               Designed for your{" "}
               <span className="italic font-medium" style={{
                 color: "#4878c8",
@@ -586,7 +579,7 @@ export default function LandingPage() {
               }}>Big Day</span>
             </h1>
 
-            <p style={heroFade(240)} className="text-lg md:text-xl max-w-2xl mx-auto mb-14 leading-relaxed" css_style={{ color: "#4a6080", fontFamily: "'Gill Sans', 'Optima', sans-serif" }}>
+            <p style={{ ...heroFade(240), color: "#4a6080", fontFamily: "'Gill Sans', 'Optima', sans-serif" }} className="text-lg md:text-xl max-w-2xl mx-auto mb-14 leading-relaxed">
               Easy-to-customize, effortless to share. Your private digital workspace for coordinating guests, organizing seating, and celebrating together.
             </p>
 

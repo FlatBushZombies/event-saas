@@ -68,3 +68,40 @@ export interface GuestbookEntry {
   created_at: string
   updated_at?: string
 }
+
+export interface SeatingTable {
+  id: string
+  event_id: string
+  name: string
+  capacity: number
+  order_index: number
+  pos_x_percent: number
+  pos_y_percent: number
+  created_at: string
+  updated_at?: string
+}
+
+export interface SeatingAssignment {
+  table_id: string
+  invite_id: string
+}
+
+export interface SeatingGuest {
+  id: string
+  invite_code: string
+  attendee_name?: string | null
+  attendee_email?: string | null
+  status: "accepted" | "scanned" | string
+  accepted_at?: string | null
+  scanned_at?: string | null
+  created_at: string
+}
+
+export interface SeatingOverviewTable {
+  id: string
+  name: string
+  capacity: number
+  pos_x_percent: number
+  pos_y_percent: number
+  assignedCount: number
+}

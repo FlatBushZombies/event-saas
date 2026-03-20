@@ -10,6 +10,7 @@ import { MediaGallery } from "@/components/media-gallery"
 import { PollsList } from "@/components/polls-list"
 import { CreatePollDialog } from "@/components/create-poll-dialog"
 import { Guestbook } from "@/components/guestbook"
+import { SeatingPlanner } from "@/components/seating-planner"
 
 export default async function EventDetailPage({ params }: { params: Promise<{ eventId: string }> }) {
   const { userId } = await auth()
@@ -70,6 +71,16 @@ export default async function EventDetailPage({ params }: { params: Promise<{ ev
             </div>
           </div>
           <Guestbook mode="owner" eventId={eventId} />
+        </div>
+
+        <div className="mt-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold">Smart Seater Plan</h2>
+              <p className="text-muted-foreground">Drag tables, set capacities, assign guests, and spot over-capacity.</p>
+            </div>
+          </div>
+          <SeatingPlanner eventId={eventId} />
         </div>
 
         <div className="mt-8">

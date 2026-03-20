@@ -13,6 +13,7 @@ import { GuestPolls } from "@/components/guest-polls"
 import { useRouter } from "next/navigation"
 import { WeddingInvitationReveal } from "@/components/wedding-invitation-reveal"
 import { Guestbook } from "@/components/guestbook"
+import { GuestSeatSearch } from "@/components/guest-seat-search"
 
 interface InviteAcceptanceProps {
   invite: {
@@ -111,6 +112,25 @@ export function InviteAcceptance({ invite }: InviteAcceptanceProps) {
             </div>
           </div>
         )}
+
+        {/* Seating Card */}
+        <Card className="w-full max-w-2xl mx-auto border-border/50 shadow-lg overflow-hidden">
+          <div className="h-1.5 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20" />
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-3 font-serif text-xl">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <span className="text-primary font-bold">T</span>
+              </div>
+              <span>Smart Seater Plan</span>
+            </CardTitle>
+            <CardDescription className="font-serif italic">
+              Search your table and find your seat fast.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <GuestSeatSearch eventId={invite.event_id} inviteCode={invite.invite_code} />
+          </CardContent>
+        </Card>
 
         {/* Wedding Polls Card */}
         <Card className="w-full max-w-2xl mx-auto border-border/50 shadow-lg overflow-hidden">

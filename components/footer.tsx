@@ -1,7 +1,13 @@
+"use client"
+
 import Link from "next/link"
-import { Heart } from "lucide-react"
+import { useAuth } from "@clerk/nextjs"
 
 export default function Footer() {
+  const { isLoaded, isSignedIn } = useAuth()
+  const href = isLoaded && isSignedIn ? "/dashboard" : "/sign-in"
+  const label = isLoaded && isSignedIn ? "View Dashboard →" : "Start free →"
+
   return (
     <footer className="relative bg-black text-white overflow-hidden">
 
@@ -28,10 +34,10 @@ export default function Footer() {
             </p>
 
             <Link
-              href="/sign-in"
+              href={href}
               className="inline-flex items-center rounded-2xl bg-white text-black px-6 py-3 text-sm font-medium hover:scale-[1.03] hover:bg-white/90 transition-all duration-200"
             >
-              Start free →
+              {label}
             </Link>
           </div>
 

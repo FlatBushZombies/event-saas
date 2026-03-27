@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Trash2, ImageIcon, Film, X, Loader2 } from "lucide-react"
+import { Trash2, ImageIcon, Film, Loader2, Play, Sparkles, Clock3 } from "lucide-react"
 import { format } from "date-fns"
 import { toast } from "sonner"
 
@@ -36,6 +36,20 @@ export function MediaGallery({ eventId, inviteCode, canDelete = false }: MediaGa
   const [thumbnailUrls, setThumbnailUrls] = useState<Record<string, string>>({})
 
   const media: Media[] = data?.media || []
+
+  function getTileClass(index: number) {
+    const pattern = index % 8
+
+    if (pattern === 2 || pattern === 5) {
+      return "md:col-span-2 md:row-span-2"
+    }
+
+    if (pattern === 7) {
+      return "md:col-span-2"
+    }
+
+    return ""
+  }
 
   // Load thumbnails for all media items
   useEffect(() => {
@@ -166,24 +180,47 @@ export function MediaGallery({ eventId, inviteCode, canDelete = false }: MediaGa
 
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {media.map((item) => (
-          <Card
+      <div className="space-y-4">
+        <div className="flex flex-col gap-3 rounded-[1.75rem] border border-border/60 bg-gradient-to-br from-white to-primary/5 p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-primary">
+              <Sparkles className="h-3.5 w-3.5" />
+              Explore the celebration
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {media.length} shared {media.length === 1 ? "moment" : "moments"} in an always-on event feed.
+            </p>
+          </div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-white px-4 py-2 text-sm text-primary shadow-sm">
+            <Clock3 className="h-4 w-4" />
+            <span>Newest moments first</span>
+          </div>
+        </div>
+
+        <div className="grid auto-rows-[150px] grid-cols-2 gap-3 md:auto-rows-[165px] md:grid-cols-4">
+        {media.map((item, index) => (
+          <button
             key={item.id}
-            className="overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary transition-all group relative"
+            type="button"
+            className={[
+              "group relative overflow-hidden rounded-[1.75rem] border border-white/60 bg-muted/30 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30",
+              getTileClass(index),
+            ].join(" ")}
             onClick={() => handleMediaClick(item)}
           >
-            <div className="aspect-square bg-muted flex items-center justify-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/65" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.2),transparent_45%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <div className="relative flex h-full items-center justify-center overflow-hidden bg-muted">
               {thumbnailUrls[item.id] && item.file_type.startsWith("image/") ? (
                 <img
                   src={thumbnailUrls[item.id]}
                   alt={item.caption || item.file_name}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               ) : thumbnailUrls[item.id] && item.file_type.startsWith("video/") ? (
                 <video
                   src={thumbnailUrls[item.id]}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   muted
                 />
               ) : (
@@ -195,43 +232,64 @@ export function MediaGallery({ eventId, inviteCode, canDelete = false }: MediaGa
                   )}
                 </>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="absolute bottom-2 left-2 right-2">
-                  <p className="text-white text-xs truncate">{item.file_name}</p>
-                </div>
+            </div>
+
+            <div className="absolute left-3 right-3 top-3 flex items-start justify-between gap-3">
+              <div className="inline-flex items-center gap-1 rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur-md">
+                {item.file_type.startsWith("video/") ? (
+                  <>
+                    <Play className="h-3 w-3 fill-current" />
+                    Reel
+                  </>
+                ) : (
+                  <>
+                    <ImageIcon className="h-3 w-3" />
+                    Photo
+                  </>
+                )}
+              </div>
+
+              {canDelete && (
+                <Button
+                  size="icon"
+                  variant="destructive"
+                  className="h-8 w-8 bg-black/60 backdrop-blur-md opacity-0 transition-opacity group-hover:opacity-100"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleDelete(item.id)
+                  }}
+                  disabled={deleting === item.id}
+                >
+                  {deleting === item.id ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
+                </Button>
+              )}
+            </div>
+
+            <div className="absolute inset-x-0 bottom-0 p-4">
+              <div className="rounded-[1.25rem] border border-white/15 bg-black/45 p-3 text-white backdrop-blur-md">
+                <p className="truncate text-sm font-medium">{item.caption || item.file_name}</p>
+                <p className="mt-1 text-xs text-white/75">
+                  {format(new Date(item.created_at), "MMM d 'at' h:mm a")}
+                </p>
               </div>
             </div>
-            {canDelete && (
-              <Button
-                size="icon"
-                variant="destructive"
-                className="absolute top-2 right-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleDelete(item.id)
-                }}
-                disabled={deleting === item.id}
-              >
-                {deleting === item.id ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Trash2 className="h-4 w-4" />
-                )}
-              </Button>
-            )}
-          </Card>
+          </button>
         ))}
+        </div>
       </div>
 
       <Dialog open={!!selectedMedia} onOpenChange={handleClosePreview}>
-        <DialogContent className="max-w-4xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center justify-between">
-              <span className="truncate pr-4">{selectedMedia?.file_name}</span>
-            </DialogTitle>
+        <DialogContent className="max-w-5xl overflow-hidden border-border/60 bg-background/95 p-0">
+          <DialogHeader className="border-b border-border/60 px-6 py-4">
+            <DialogTitle className="truncate pr-4 text-xl font-serif">{selectedMedia?.file_name}</DialogTitle>
           </DialogHeader>
 
-          <div className="relative min-h-64">
+          <div className="grid gap-0 md:grid-cols-[minmax(0,1fr)_320px]">
+            <div className="relative min-h-64 bg-black/5 p-4 md:p-6">
             {loadingUrl ? (
               <div className="flex items-center justify-center h-64">
                 <Loader2 className="h-8 w-8 animate-spin" />
@@ -242,14 +300,14 @@ export function MediaGallery({ eventId, inviteCode, canDelete = false }: MediaGa
                   <img
                     src={mediaUrl || "/placeholder.svg"}
                     alt={selectedMedia?.caption || selectedMedia?.file_name}
-                    className="w-full max-h-[70vh] object-contain rounded-lg"
+                    className="w-full max-h-[70vh] object-contain rounded-[1.5rem]"
                   />
                 )}
                 {selectedMedia?.file_type.startsWith("video/") && (
                   <video
                     src={mediaUrl}
                     controls
-                    className="w-full max-h-[70vh] rounded-lg"
+                    className="w-full max-h-[70vh] rounded-[1.5rem]"
                   />
                 )}
               </>
@@ -258,15 +316,36 @@ export function MediaGallery({ eventId, inviteCode, canDelete = false }: MediaGa
                 Failed to load media
               </div>
             )}
-          </div>
+            </div>
 
-          {selectedMedia?.caption && (
-            <p className="text-sm text-muted-foreground">{selectedMedia.caption}</p>
-          )}
-          
-          <p className="text-xs text-muted-foreground">
-            Uploaded {selectedMedia && format(new Date(selectedMedia.created_at), "PPP 'at' p")}
-          </p>
+            <div className="space-y-4 px-6 py-5">
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+                <Sparkles className="h-3.5 w-3.5" />
+                Explore Detail
+              </div>
+
+              {selectedMedia?.caption ? (
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Caption</p>
+                  <p className="mt-2 text-sm leading-relaxed text-foreground/85">{selectedMedia.caption}</p>
+                </div>
+              ) : null}
+
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Shared</p>
+                <p className="mt-2 text-sm text-foreground/80">
+                  {selectedMedia && format(new Date(selectedMedia.created_at), "EEEE, MMMM d 'at' h:mm a")}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Format</p>
+                <p className="mt-2 text-sm text-foreground/80">
+                  {selectedMedia?.file_type.startsWith("video/") ? "Video memory" : "Photo memory"}
+                </p>
+              </div>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </>

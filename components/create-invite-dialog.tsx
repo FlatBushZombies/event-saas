@@ -158,17 +158,15 @@ export function CreateInviteDialog({ eventId }: CreateInviteDialogProps) {
                 </div>
               </div>
             ) : (
-              <div className="p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl">
+              <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center flex-shrink-0">
-                    <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white text-primary shadow-sm">
+                    <Sparkles className="h-4 w-4" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                      Invite created
-                    </p>
-                    <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                      Share the link below with your guest manually.
+                    <p className="text-sm font-medium text-foreground">Invite created</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Share the link below directly. Guests do not need to sign in to accept and join the experience.
                     </p>
                   </div>
                 </div>
@@ -239,7 +237,7 @@ export function CreateInviteDialog({ eventId }: CreateInviteDialogProps) {
                 className="rounded-xl border-border/60 focus:border-primary/40 h-11"
               />
               <p className="text-xs text-muted-foreground pl-1">
-                We&apos;ll send an invitation email with a personal link
+                Guests simply open their personal link to access the timeline, guestbook, gallery, votes, and seating.
               </p>
             </div>
 

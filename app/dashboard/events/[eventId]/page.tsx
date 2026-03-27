@@ -11,6 +11,7 @@ import { PollsList } from "@/components/polls-list"
 import { CreatePollDialog } from "@/components/create-poll-dialog"
 import { Guestbook } from "@/components/guestbook"
 import { SeatingPlanner } from "@/components/seating-planner"
+import { TimelineEditor } from "@/components/timeline-editor"
 
 export default async function EventDetailPage({ params }: { params: Promise<{ eventId: string }> }) {
   const { userId } = await auth()
@@ -44,8 +45,8 @@ export default async function EventDetailPage({ params }: { params: Promise<{ ev
         <div className="mt-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold">Event Media</h2>
-              <p className="text-muted-foreground">Share photos and videos with your attendees</p>
+              <h2 className="text-2xl font-bold">Shared Memories</h2>
+              <p className="text-muted-foreground">A beautiful gallery for the couple and guests to keep adding to.</p>
             </div>
             <MediaUpload eventId={eventId} />
           </div>
@@ -55,8 +56,8 @@ export default async function EventDetailPage({ params }: { params: Promise<{ ev
         <div className="mt-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold">Wedding Polls</h2>
-              <p className="text-muted-foreground">Engage your guests with fun questions and predictions</p>
+              <h2 className="text-2xl font-bold">Guest Voting</h2>
+              <p className="text-muted-foreground">Invite playful predictions, preferences, and little moments of interaction.</p>
             </div>
             <CreatePollDialog eventId={eventId} />
           </div>
@@ -67,7 +68,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ ev
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold">Guestbook</h2>
-              <p className="text-muted-foreground">Read guest messages and export the full book as PDF</p>
+              <p className="text-muted-foreground">Collect heartfelt notes and keep them beautifully archived.</p>
             </div>
           </div>
           <Guestbook mode="owner" eventId={eventId} />
@@ -76,8 +77,18 @@ export default async function EventDetailPage({ params }: { params: Promise<{ ev
         <div className="mt-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold">Smart Seater Plan</h2>
-              <p className="text-muted-foreground">Drag tables, set capacities, assign guests, and spot over-capacity.</p>
+              <h2 className="text-2xl font-bold">Wedding Timeline</h2>
+              <p className="text-muted-foreground">Publish the key moments so guests always know what happens next.</p>
+            </div>
+          </div>
+          <TimelineEditor eventId={eventId} />
+        </div>
+
+        <div className="mt-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold">Seating & Tables</h2>
+              <p className="text-muted-foreground">Shape the room, assign guests with confidence, and keep things balanced.</p>
             </div>
           </div>
           <SeatingPlanner eventId={eventId} />
@@ -87,7 +98,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ ev
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold">Invitations</h2>
-              <p className="text-muted-foreground">Manage and track your event invites</p>
+              <p className="text-muted-foreground">Send private access, track responses, and welcome guests into the experience.</p>
             </div>
             <CreateInviteDialog eventId={eventId} />
           </div>

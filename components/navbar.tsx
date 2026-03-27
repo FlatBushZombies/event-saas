@@ -17,22 +17,21 @@ const Navbar = () => {
   }, [isLoaded, isSignedIn, router])
 
   const loginHref = isSignedIn ? "/dashboard" : "/sign-in"
-  const loginLabel = isSignedIn ? "View Dashboard" : "SIGN IN"
+  const loginLabel = isSignedIn ? "Your Space" : "Sign In"
 
   return (
     <header className="navbar">
       <nav className="inner">
         <div className="left">
-          <div className="brand">
+          <Link href="/" className="brand">
             <Heart className="logo" />
             <span className="name">Wedspace</span>
-          </div>
+          </Link>
 
           <ul className="links">
-            <a href="#features">Features</a>
-            <a href="#how-it-works">How It Works</a>
-            <a href="#">Pricing</a>
-            <a href="#">Stories</a>
+            <a href="#experience">Experience</a>
+            <a href="#how-it-works">How It Lives</a>
+            <a href="#features">For Couples</a>
           </ul>
         </div>
 
@@ -41,7 +40,7 @@ const Navbar = () => {
             {loginLabel}
           </Link>
           <a href="/sign-up" className="cta">
-            Get Started
+            Create Your Space
           </a>
         </div>
       </nav>

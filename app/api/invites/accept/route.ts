@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/server-supabase"
+import { isAcceptedInviteStatus } from "@/lib/event-access"
 
 export async function POST(request: Request) {
   const { inviteCode, attendeeName, attendeeEmail } = await request.json()
+
+  if (!inviteCode) {
+    return NextResponse.json({ error: "Invite code is required" }, { status: 400 })
+  }
 
   // Use admin client to bypass RLS for invite acceptance
   const supabase = createAdminClient()
@@ -13,12 +18,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invite not found" }, { status: 404 })
   }
 
-  // Check if already accepted
-  if (invite.status === "accepted" || invite.status === "scanned") {
-    return NextResponse.json(
-      { error: "Invite already accepted", invite },
-      { status: 400 }
-    )
+  if (isAcceptedInviteStatus(invite.status)) {
+    const { data: acceptedInvite, error: updateAcceptedError } = await supabase
+      .from("invites")
+      .update({
+        attendee_name: attendeeName || invite.attendee_name,
+        attendee_email: attendeeEmail || invite.attendee_email,
+        qr_code_data: invite.qr_code_data || inviteCode,
+      })
+      .eq("invite_code", inviteCode)
+      .select()
+      .single()
+
+    if (updateAcceptedError) {
+      return NextResponse.json({ error: updateAcceptedError.message }, { status: 500 })
+    }
+
+    return NextResponse.json({ success: true, invite: acceptedInvite, alreadyAccepted: true })
   }
 
   const { data: updatedInvite, error } = await supabase

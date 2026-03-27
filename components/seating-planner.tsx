@@ -191,22 +191,23 @@ export function SeatingPlanner({ eventId }: SeatingPlannerProps) {
   }
 
   return (
-    <Card>
+    <Card className="overflow-hidden border-border/60 bg-gradient-to-br from-white via-white to-primary/5 shadow-lg">
+      <div className="h-1.5 bg-gradient-to-r from-primary/10 via-primary/50 to-primary/10" />
       <CardHeader>
         <div className="flex items-start justify-between gap-4">
           <div>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-2xl font-serif">
               <Table2 className="h-5 w-5" />
-              Smart Seater Plan
+              Smart Seating Plan
             </CardTitle>
-            <CardDescription>Drag tables, set capacities, assign guests, and spot over-capacity automatically.</CardDescription>
+            <CardDescription>Drag tables, set capacities, assign guests, and keep the room balanced automatically.</CardDescription>
           </div>
           <div className="flex items-center gap-2">
-            <Button type="button" variant="outline" className="bg-transparent" onClick={addTable}>
+            <Button type="button" variant="outline" className="rounded-full bg-white/80" onClick={addTable}>
               <Plus className="h-4 w-4 mr-2" />
               Add table
             </Button>
-            <Button type="button" onClick={savePlan} disabled={saving} className="gap-2">
+            <Button type="button" onClick={savePlan} disabled={saving} className="gap-2 rounded-full shadow-sm">
               <Save className="h-4 w-4" />
               {saving ? "Saving..." : "Save plan"}
             </Button>
@@ -214,12 +215,12 @@ export function SeatingPlanner({ eventId }: SeatingPlannerProps) {
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-          <div className="inline-flex items-center gap-2">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/10 bg-white/80 px-3 py-1.5 shadow-sm">
             <Users className="h-4 w-4" />
             {acceptedGuests.length} accepted guest{acceptedGuests.length === 1 ? "" : "s"}
           </div>
-          <div>•</div>
-          <div>{unassignedCount} unassigned</div>
+          <div aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-primary/25" />
+          <div className="rounded-full border border-border/60 bg-white/70 px-3 py-1.5 shadow-sm">{unassignedCount} unassigned</div>
         </div>
       </CardHeader>
 
@@ -243,7 +244,7 @@ export function SeatingPlanner({ eventId }: SeatingPlannerProps) {
                 const assignedIndex = assignmentByInviteId[g.id] ?? null
                 const label = g.attendee_name || g.attendee_email || "Guest"
                 return (
-                  <div key={g.id} className="rounded-2xl border border-border bg-muted/20 p-3">
+                  <div key={g.id} className="rounded-[1.4rem] border border-border/60 bg-white/85 p-3 shadow-sm">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <p className="font-medium truncate">{label}</p>
@@ -265,12 +266,12 @@ export function SeatingPlanner({ eventId }: SeatingPlannerProps) {
                           const v = e.target.value
                           assignGuest(g.id, v === "" ? null : Number(v))
                         }}
-                        className="flex-1 rounded-xl border border-border bg-white px-2 py-1 text-sm"
+                        className="flex-1 rounded-xl border border-border/60 bg-white/90 px-2 py-1 text-sm"
                       >
                         <option value="">Unassigned</option>
                         {tables.map((t, idx) => (
                           <option key={idx} value={idx}>
-                            {t.name} {isTableOverCapacity(idx) ? "• Over" : ""}
+                            {t.name} {isTableOverCapacity(idx) ? "- Over" : ""}
                           </option>
                         ))}
                       </select>
@@ -291,7 +292,7 @@ export function SeatingPlanner({ eventId }: SeatingPlannerProps) {
 
             <div
               ref={canvasRef}
-              className="relative w-full min-h-[520px] rounded-3xl border border-border bg-gradient-to-b from-white to-muted/30 overflow-hidden"
+              className="relative w-full min-h-[520px] overflow-hidden rounded-[2rem] border border-primary/10 bg-[radial-gradient(circle_at_top,rgba(186,125,114,0.10),transparent_35%),linear-gradient(180deg,rgba(255,255,255,0.96),rgba(249,241,236,0.9))]"
               onPointerMove={handleCanvasPointerMove}
               onPointerUp={() => setDraggingIndex(null)}
             >
@@ -301,7 +302,7 @@ export function SeatingPlanner({ eventId }: SeatingPlannerProps) {
                 className="absolute inset-0 opacity-30 pointer-events-none"
                 style={{
                   backgroundImage:
-                    "linear-gradient(to right, rgba(59,130,246,0.18) 1px, transparent 1px), linear-gradient(to bottom, rgba(59,130,246,0.18) 1px, transparent 1px)",
+                    "linear-gradient(to right, rgba(186,125,114,0.14) 1px, transparent 1px), linear-gradient(to bottom, rgba(186,125,114,0.14) 1px, transparent 1px)",
                   backgroundSize: "60px 60px",
                 }}
               />
@@ -316,7 +317,7 @@ export function SeatingPlanner({ eventId }: SeatingPlannerProps) {
                     tabIndex={0}
                     className={[
                       "absolute rounded-2xl border shadow-sm select-none cursor-grab bg-white/90 backdrop-blur",
-                      over ? "border-red-300" : "border-border",
+                      over ? "border-red-300" : "border-primary/10",
                     ].join(" ")}
                     style={{
                       left: `${t.posXPercent}%`,
@@ -334,7 +335,7 @@ export function SeatingPlanner({ eventId }: SeatingPlannerProps) {
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
                           <p className="font-serif font-semibold truncate">{t.name}</p>
-                          <p className="text-xs text-muted-foreground">{over ? "Over capacity" : "Spacious"}</p>
+                          <p className="text-xs text-muted-foreground">{over ? "Over capacity" : "Balanced"}</p>
                         </div>
                         <div className="text-xs font-medium">
                           {assignedCount}/{t.capacity}
@@ -343,11 +344,11 @@ export function SeatingPlanner({ eventId }: SeatingPlannerProps) {
                       <div
                         className={[
                           "mt-3 h-2 rounded-full overflow-hidden",
-                          over ? "bg-red-50" : "bg-muted/40",
+                          over ? "bg-red-50" : "bg-primary/10",
                         ].join(" ")}
                       >
                         <div
-                          className={over ? "bg-red-400" : "bg-primary/60"}
+                          className={over ? "bg-red-400" : "bg-gradient-to-r from-primary to-primary/70"}
                           style={{
                             width:
                               t.capacity > 0
@@ -379,7 +380,7 @@ export function SeatingPlanner({ eventId }: SeatingPlannerProps) {
                 const assigned = assignedCountByTableIndex[idx] || 0
                 const over = isTableOverCapacity(idx)
                 return (
-                  <div key={idx} className="rounded-3xl border border-border bg-white p-4">
+                  <div key={idx} className="rounded-[1.6rem] border border-border/60 bg-white/85 p-4 shadow-sm">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <p className="text-sm font-semibold truncate">#{idx + 1}</p>
@@ -420,7 +421,7 @@ export function SeatingPlanner({ eventId }: SeatingPlannerProps) {
                         <Button
                           type="button"
                           variant="outline"
-                          className="bg-transparent"
+                          className="rounded-full bg-white/80"
                           onClick={() => updateTable(idx, { posXPercent: 50, posYPercent: 50 })}
                         >
                           Center
@@ -428,7 +429,7 @@ export function SeatingPlanner({ eventId }: SeatingPlannerProps) {
                         <Button
                           type="button"
                           variant="outline"
-                          className="bg-transparent"
+                          className="rounded-full bg-white/80"
                           disabled={tables.length <= 1}
                           onClick={() => {
                             setTables((prev) => prev.filter((_, i) => i !== idx))
@@ -464,4 +465,3 @@ export function SeatingPlanner({ eventId }: SeatingPlannerProps) {
     </Card>
   )
 }
-

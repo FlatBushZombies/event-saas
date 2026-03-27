@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
 import { createAdminClient } from "@/lib/server-supabase"
+import { getEventAccess } from "@/lib/event-access"
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -15,37 +16,9 @@ export async function GET(request: NextRequest) {
   // Use admin client to bypass RLS
   const supabase = createAdminClient()
   const { userId } = await auth()
+  const access = await getEventAccess(supabase, { eventId, userId, inviteCode })
 
-  let authorized = false
-
-  // Check if user is event owner
-  if (userId) {
-    const { data: event } = await supabase
-      .from("events")
-      .select("user_id")
-      .eq("id", eventId)
-      .single()
-
-    if (event?.user_id === userId) {
-      authorized = true
-    }
-  }
-
-  // Check invite code for accepted invites
-  if (!authorized && inviteCode) {
-    const { data: invite } = await supabase
-      .from("invites")
-      .select("status")
-      .eq("invite_code", inviteCode)
-      .eq("event_id", eventId)
-      .single()
-
-    if (invite && (invite.status === "accepted" || invite.status === "scanned")) {
-      authorized = true
-    }
-  }
-
-  if (!authorized) {
+  if (!access) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
   }
 

@@ -4,26 +4,26 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated to light purple/lavender theme inspired by the design */
-  --background: oklch(0.985 0.005 280);
-  --foreground: oklch(0.2 0.02 280);
+  /* Warm wedding palette */
+  --background: oklch(0.985 0.01 45);
+  --foreground: oklch(0.28 0.03 25);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.02 280);
+  --card-foreground: oklch(0.28 0.03 25);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.02 280);
-  --primary: oklch(0.55 0.18 280);
+  --popover-foreground: oklch(0.28 0.03 25);
+  --primary: oklch(0.68 0.1 28);
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.95 0.01 280);
-  --secondary-foreground: oklch(0.2 0.02 280);
-  --muted: oklch(0.96 0.005 280);
-  --muted-foreground: oklch(0.5 0.01 280);
-  --accent: oklch(0.94 0.02 280);
-  --accent-foreground: oklch(0.55 0.18 280);
+  --secondary: oklch(0.965 0.015 50);
+  --secondary-foreground: oklch(0.28 0.03 25);
+  --muted: oklch(0.965 0.008 38);
+  --muted-foreground: oklch(0.5 0.02 30);
+  --accent: oklch(0.94 0.03 70);
+  --accent-foreground: oklch(0.42 0.05 38);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.92 0.005 280);
-  --input: oklch(0.92 0.005 280);
-  --ring: oklch(0.55 0.18 280);
+  --border: oklch(0.91 0.01 35);
+  --input: oklch(0.91 0.01 35);
+  --ring: oklch(0.68 0.1 28);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -32,12 +32,12 @@
   --radius: 0.75rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.55 0.18 280);
+  --sidebar-primary: oklch(0.68 0.1 28);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.94 0.02 280);
-  --sidebar-accent-foreground: oklch(0.55 0.18 280);
-  --sidebar-border: oklch(0.92 0.005 280);
-  --sidebar-ring: oklch(0.55 0.18 280);
+  --sidebar-accent: oklch(0.94 0.03 70);
+  --sidebar-accent-foreground: oklch(0.42 0.05 38);
+  --sidebar-border: oklch(0.91 0.01 35);
+  --sidebar-ring: oklch(0.68 0.1 28);
 }
 
 .dark {
@@ -118,22 +118,22 @@
 
 @theme {
     /* base */
-    --color-background: #f8fafc;
-    --color-foreground: #0f172a;
-    --color-surface: #ffffff;
-    --color-surface-highlight: #f1f5f9;
-    --color-border: #e2e8f0;
-    --color-muted: #64748b;
+    --color-background: #fcf7f2;
+    --color-foreground: #2c1f1b;
+    --color-surface: #fffaf5;
+    --color-surface-highlight: #f6ece4;
+    --color-border: #eadfd6;
+    --color-muted: #7e6b64;
 
-    /* brand (blue) */
-    --color-primary: #3b82f6;
-    --color-primary-hover: #2563eb;
-    --color-primary-active: #1d4ed8;
-    --color-primary-soft: #dbeafe;
+    /* brand (rose clay) */
+    --color-primary: #b97971;
+    --color-primary-hover: #a86d66;
+    --color-primary-active: #925852;
+    --color-primary-soft: #f4e4df;
 
     /* supporting accents */
-    --color-secondary: #0ea5e9;
-    --color-accent: #6366f1;
+    --color-secondary: #d7b48d;
+    --color-accent: #8c9b7b;
 
     /* states */
     --color-success: #16a34a;
@@ -142,7 +142,7 @@
 
     /* typography */
     --font-serif: "Instrument Serif", serif;
-    --font-sans: Inter, sans-serif;
+    --font-sans: "Geist", sans-serif;
 
     /* radius */
     --radius-sm: 8px;
@@ -165,9 +165,9 @@
     }
 
     body {
-        background-color: #fdfbf7;
-        color: #1a1a1a;
-        font-family: Inter, sans-serif;
+        background-color: #fcf7f2;
+        color: #2c1f1b;
+        font-family: "Geist", sans-serif;
         -webkit-font-smoothing: antialiased;
     }
 
@@ -187,7 +187,7 @@
     }
 
     ::-webkit-scrollbar-track {
-        background: #fdfbf7;
+        background: #fcf7f2;
     }
 
     ::-webkit-scrollbar-thumb {
@@ -205,7 +205,7 @@
         @apply inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed;
 
         &.btn--primary {
-            @apply bg-primary text-white hover:bg-[#EA580C] shadow-sm;
+            @apply bg-primary text-white hover:bg-[#a86d66] shadow-sm;
         }
 
         &.btn--secondary {
@@ -295,7 +295,7 @@
                 }
 
                 .cta {
-                    @apply inline-flex items-center justify-center rounded-md font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed px-3 py-1.5 text-xs uppercase tracking-wide bg-primary text-white hover:bg-black shadow-sm;
+                     @apply inline-flex items-center justify-center rounded-md font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed px-3 py-1.5 text-xs uppercase tracking-wide bg-primary text-white hover:bg-[#a86d66] shadow-sm;
                 }
             }
         }
@@ -327,7 +327,7 @@
                 @apply flex flex-col space-y-3;
 
                 .confirm {
-                    @apply bg-primary hover:bg-orange-600 text-white;
+                    @apply bg-primary hover:bg-[#a86d66] text-white;
                 }
 
                 .cancel {
@@ -344,10 +344,10 @@
             @apply relative h-48 rounded-xl border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center cursor-pointer bg-zinc-50 border-zinc-200 hover:border-zinc-300 hover:bg-zinc-100;
 
             &.is-dragging {
-                @apply border-primary bg-orange-50;
+                @apply border-primary bg-[rgb(250,239,235)];
 
                 .drop-icon {
-                    @apply bg-orange-100 text-primary;
+                    @apply bg-[rgb(244,228,223)] text-primary;
                 }
             }
 
@@ -468,7 +468,7 @@
                     @apply flex flex-wrap items-center gap-3;
 
                     .export {
-                        @apply bg-primary text-white hover:bg-orange-600 h-9 border-none shadow-sm;
+                         @apply bg-primary text-white hover:bg-[#a86d66] h-9 border-none shadow-sm;
                     }
 
                     .share {

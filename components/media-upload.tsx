@@ -20,9 +20,19 @@ import { toast } from "sonner"
 
 interface MediaUploadProps {
   eventId: string
+  inviteCode?: string
+  buttonLabel?: string
+  title?: string
+  description?: string
 }
 
-export function MediaUpload({ eventId }: MediaUploadProps) {
+export function MediaUpload({
+  eventId,
+  inviteCode,
+  buttonLabel = "Upload Media",
+  title,
+  description,
+}: MediaUploadProps) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -63,6 +73,9 @@ export function MediaUpload({ eventId }: MediaUploadProps) {
       const formData = new FormData()
       formData.append("file", selectedFile)
       formData.append("eventId", eventId)
+      if (inviteCode) {
+        formData.append("inviteCode", inviteCode)
+      }
       if (caption) {
         formData.append("caption", caption)
       }
@@ -73,7 +86,7 @@ export function MediaUpload({ eventId }: MediaUploadProps) {
       })
 
       if (response.ok) {
-        toast.success("Media uploaded successfully!")
+        toast.success(inviteCode ? "Memory shared successfully!" : "Media uploaded successfully!")
         // Refresh the page to show new media
         setTimeout(() => {
           window.location.reload()
@@ -97,14 +110,17 @@ export function MediaUpload({ eventId }: MediaUploadProps) {
       <DialogTrigger asChild>
         <Button>
           <Upload className="mr-2 h-4 w-4" />
-          Upload Media
+          {buttonLabel}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Upload Media</DialogTitle>
+          <DialogTitle>{title || (inviteCode ? "Share a Memory" : "Upload Media")}</DialogTitle>
           <DialogDescription>
-            Share photos or videos with your event attendees
+            {description ||
+              (inviteCode
+                ? "Upload photos or videos for everyone at the event to enjoy."
+                : "Share photos or videos with your event attendees")}
           </DialogDescription>
         </DialogHeader>
 
@@ -180,7 +196,7 @@ export function MediaUpload({ eventId }: MediaUploadProps) {
             Cancel
           </Button>
           <Button onClick={handleUpload} disabled={!selectedFile || loading}>
-            {loading ? "Uploading..." : "Upload"}
+            {loading ? "Uploading..." : inviteCode ? "Share Memory" : "Upload"}
           </Button>
         </DialogFooter>
       </DialogContent>

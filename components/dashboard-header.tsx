@@ -21,9 +21,12 @@ export function DashboardHeader({ userId }: DashboardHeaderProps) {
             <div className="h-10 w-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
               <Calendar className="h-5 w-5 text-primary" />
             </div>
-            <span className="text-2xl font-serif font-semibold tracking-tight text-foreground">
-              Wedspace
-            </span>
+            <div>
+              <span className="block text-2xl font-serif font-semibold tracking-tight text-foreground">Wedspace</span>
+              <span className="hidden text-[11px] uppercase tracking-[0.22em] text-muted-foreground lg:block">
+                Your private wedding home
+              </span>
+            </div>
           </Link>
           <nav className="hidden md:flex items-center gap-8">
             <Link
@@ -31,14 +34,14 @@ export function DashboardHeader({ userId }: DashboardHeaderProps) {
               className="flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
             >
               <LayoutDashboard className="h-4 w-4" />
-              Dashboard
+              Home
             </Link>
             <Link
               href="/dashboard/scanner"
               className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
             >
               <QrCode className="h-4 w-4" />
-              Scanner
+              Check-In
             </Link>
           </nav>
         </div>
@@ -76,7 +79,7 @@ export function DashboardHeader({ userId }: DashboardHeaderProps) {
               onClick={() => setMobileMenuOpen(false)}
             >
               <LayoutDashboard className="h-4 w-4" />
-              Dashboard
+              Home
             </Link>
             <Link
               href="/dashboard/scanner"
@@ -84,7 +87,7 @@ export function DashboardHeader({ userId }: DashboardHeaderProps) {
               onClick={() => setMobileMenuOpen(false)}
             >
               <QrCode className="h-4 w-4" />
-              Scanner
+              Check-In
             </Link>
             <div className="pt-2 border-t border-border/40">
               <UserButton />

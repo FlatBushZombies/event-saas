@@ -9,11 +9,14 @@ import { Label } from "@/components/ui/label"
 import { Calendar, MapPin, ImageIcon, BarChart3, Heart, Sparkles, BookHeart } from "lucide-react"
 import { format } from "date-fns"
 import { MediaGallery } from "@/components/media-gallery"
+import { MediaUpload } from "@/components/media-upload"
 import { GuestPolls } from "@/components/guest-polls"
 import { useRouter } from "next/navigation"
 import { WeddingInvitationReveal } from "@/components/wedding-invitation-reveal"
 import { Guestbook } from "@/components/guestbook"
 import { GuestSeatSearch } from "@/components/guest-seat-search"
+import { WeddingTimeline } from "@/components/wedding-timeline"
+import { toast } from "sonner"
 
 interface InviteAcceptanceProps {
   invite: {
@@ -67,13 +70,14 @@ export function InviteAcceptance({ invite }: InviteAcceptanceProps) {
 
       if (response.ok) {
         setStatus("accepted")
+        toast.success(data.alreadyAccepted ? "Invite already accepted" : "Invitation accepted")
         router.refresh()
       } else {
-        alert(data.error || "Failed to accept invitation")
+        toast.error(data.error || "Failed to accept invitation")
       }
     } catch (error) {
       console.error("Accept invite error:", error)
-      alert("Failed to accept invitation. Please try again.")
+      toast.error("Failed to accept invitation. Please try again.")
     } finally {
       setLoading(false)
     }
@@ -112,6 +116,8 @@ export function InviteAcceptance({ invite }: InviteAcceptanceProps) {
             </div>
           </div>
         )}
+
+        <WeddingTimeline eventId={invite.event_id} inviteCode={invite.invite_code} />
 
         {/* Seating Card */}
         <Card className="w-full max-w-2xl mx-auto border-border/50 shadow-lg overflow-hidden">
@@ -179,15 +185,26 @@ export function InviteAcceptance({ invite }: InviteAcceptanceProps) {
         <Card className="w-full max-w-2xl mx-auto border-border/50 shadow-lg overflow-hidden">
           <div className="h-1.5 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20" />
           <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-3 font-serif text-xl">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <ImageIcon className="h-5 w-5 text-primary" />
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-3 font-serif text-xl">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <ImageIcon className="h-5 w-5 text-primary" />
+                  </div>
+                  <span>Event Media</span>
+                </CardTitle>
+                <CardDescription className="font-serif italic">
+                  Photos and videos shared by the organizer and guests
+                </CardDescription>
               </div>
-              <span>Event Media</span>
-            </CardTitle>
-            <CardDescription className="font-serif italic">
-              Photos and videos shared by the event organizer
-            </CardDescription>
+              <MediaUpload
+                eventId={invite.event_id}
+                inviteCode={invite.invite_code}
+                buttonLabel="Share Memory"
+                title="Share a Wedding Memory"
+                description="Add your own photo or video to the shared event gallery."
+              />
+            </div>
           </CardHeader>
           <CardContent>
             <MediaGallery eventId={invite.event_id} inviteCode={invite.invite_code} />

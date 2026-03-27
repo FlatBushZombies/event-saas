@@ -105,3 +105,14 @@ export interface SeatingOverviewTable {
   pos_y_percent: number
   assignedCount: number
 }
+
+export interface TimelineItem {
+  id: string
+  event_id: string
+  title: string
+  time_label?: string | null
+  description?: string | null
+  order_index: number
+  created_at?: string
+  updated_at?: string
+}

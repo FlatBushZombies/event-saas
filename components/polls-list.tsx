@@ -6,7 +6,7 @@ import type { PollWithVotes } from "@/lib/types"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Trash2, BarChart3, Loader2, ToggleLeft, ToggleRight } from "lucide-react"
+import { Trash2, BarChart3, Loader2, ToggleLeft, ToggleRight, Sparkles } from "lucide-react"
 import { toast } from "sonner"
 
 interface PollsListProps {
@@ -106,15 +106,24 @@ export function PollsList({ eventId }: PollsListProps) {
   return (
     <div className="grid md:grid-cols-2 gap-6">
       {polls.map((poll) => {
-        const maxVotes = Math.max(...poll.votes, 1)
-
         return (
-          <Card key={poll.id} className={!poll.is_active ? "opacity-60" : ""}>
+          <Card
+            key={poll.id}
+            className={[
+              "overflow-hidden border-border/60 bg-gradient-to-br from-white to-primary/5 shadow-md",
+              !poll.is_active ? "opacity-75" : "",
+            ].join(" ")}
+          >
+            <div className="h-1.5 bg-gradient-to-r from-primary/10 via-primary/50 to-primary/10" />
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-lg leading-tight">{poll.question}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-primary">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    Guest voting
+                  </div>
+                  <h3 className="mt-3 font-serif text-xl leading-tight">{poll.question}</h3>
+                  <p className="text-sm text-muted-foreground mt-2">
                     {poll.total_votes} {poll.total_votes === 1 ? "vote" : "votes"}
                   </p>
                 </div>
@@ -133,16 +142,16 @@ export function PollsList({ eventId }: PollsListProps) {
                     : 0
 
                   return (
-                    <div key={index} className="space-y-1">
+                    <div key={index} className="rounded-[1.35rem] border border-border/60 bg-white/80 p-4 shadow-sm">
                       <div className="flex items-center justify-between text-sm">
-                        <span>{option}</span>
+                        <span className="font-medium">{option}</span>
                         <span className="text-muted-foreground font-medium">
                           {count} ({percentage}%)
                         </span>
                       </div>
-                      <div className="h-2 bg-muted rounded-full overflow-hidden">
+                      <div className="mt-3 h-2.5 bg-muted rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-primary rounded-full transition-all duration-500"
+                          className="h-full rounded-full bg-gradient-to-r from-primary to-primary/70 transition-all duration-500"
                           style={{ width: `${percentage}%` }}
                         />
                       </div>

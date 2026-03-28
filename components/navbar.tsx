@@ -2,22 +2,14 @@
 
 import { Heart } from "lucide-react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
 import { useAuth } from "@clerk/nextjs"
 
 const Navbar = () => {
-  const router = useRouter()
   const { isLoaded, isSignedIn } = useAuth()
 
-  useEffect(() => {
-    if (isLoaded && isSignedIn) {
-      router.replace("/dashboard")
-    }
-  }, [isLoaded, isSignedIn, router])
-
-  const loginHref = isSignedIn ? "/dashboard" : "/sign-in"
-  const loginLabel = isSignedIn ? "Your Space" : "Sign In"
+  const hasSession = isLoaded && isSignedIn
+  const loginHref = hasSession ? "/dashboard" : "/sign-in"
+  const loginLabel = hasSession ? "Your Space" : "Sign In"
 
   return (
     <header className="navbar">

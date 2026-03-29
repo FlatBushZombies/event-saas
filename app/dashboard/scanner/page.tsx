@@ -17,7 +17,7 @@ export default async function ScannerPage() {
         <div className="max-w-2xl mx-auto">
           <div className="mb-8 text-center">
             <h1 className="text-3xl font-bold mb-2">QR Code Scanner</h1>
-            <p className="text-muted-foreground">Scan attendee QR codes to check them in</p>
+            <p className="text-muted-foreground">Use your phone to open the camera and scan attendee QR codes.</p>
           </div>
           <QRScanner />
         </div>

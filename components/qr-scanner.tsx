@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Camera, CheckCircle, XCircle, Loader2 } from "lucide-react"
-import { BrowserQRCodeReader } from "@zxing/browser"
+import { BrowserQRCodeReader, type IScannerControls } from "@zxing/browser"
 
 interface ScanResult {
   success: boolean
@@ -17,141 +17,235 @@ interface ScanResult {
   eventLocation?: string
 }
 
+function isMobileDevice() {
+  if (typeof navigator === "undefined") {
+    return false
+  }
+
+  const nav = navigator as Navigator & {
+    userAgentData?: {
+      mobile?: boolean
+    }
+  }
+
+  if (typeof nav.userAgentData?.mobile === "boolean") {
+    return nav.userAgentData.mobile
+  }
+
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent)
+}
+
+function extractInviteCode(rawValue: string) {
+  const value = rawValue.trim()
+
+  try {
+    const parsedUrl = new URL(value)
+    const segments = parsedUrl.pathname.split("/").filter(Boolean)
+    const inviteIndex = segments.findIndex((segment) => segment === "invite")
+
+    if (inviteIndex >= 0 && segments[inviteIndex + 1]) {
+      return segments[inviteIndex + 1]
+    }
+  } catch {
+    // Non-URL QR values are treated as direct invite codes.
+  }
+
+  const urlMatch = value.match(/\/invite\/([a-zA-Z0-9_-]+)/)
+
+  return urlMatch?.[1] ?? value
+}
+
 export function QRScanner() {
+  const [isMobile, setIsMobile] = useState(false)
+  const [deviceChecked, setDeviceChecked] = useState(false)
   const [scanning, setScanning] = useState(false)
   const [result, setResult] = useState<ScanResult | null>(null)
   const [loading, setLoading] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
-  const codeReaderRef = useRef<BrowserQRCodeReader | null>(null)
+  const controlsRef = useRef<IScannerControls | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
+  const processingRef = useRef(false)
 
   useEffect(() => {
+    setIsMobile(isMobileDevice())
+    setDeviceChecked(true)
+
     return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop())
-      }
+      processingRef.current = false
+      teardownCamera()
     }
   }, [])
 
+  function teardownCamera() {
+    controlsRef.current?.stop()
+    controlsRef.current = null
+
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop())
+      streamRef.current = null
+    }
+
+    if (videoRef.current) {
+      videoRef.current.pause()
+      videoRef.current.srcObject = null
+    }
+  }
+
+  function stopScanner() {
+    teardownCamera()
+    processingRef.current = false
+    setLoading(false)
+    setScanning(false)
+  }
+
+  async function requestCameraStream() {
+    const preferredConstraints: MediaStreamConstraints = {
+      audio: false,
+      video: {
+        facingMode: { ideal: "environment" },
+      },
+    }
+
+    try {
+      return await navigator.mediaDevices.getUserMedia(preferredConstraints)
+    } catch {
+      return navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: true,
+      })
+    }
+  }
+
   async function startScanning() {
+    if (scanning || loading) {
+      return
+    }
+
+    if (!isMobile) {
+      setResult({
+        success: false,
+        message: "QR scanning is available on mobile devices only. Open this page on your phone to scan with the camera.",
+      })
+      return
+    }
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setResult({
+        success: false,
+        message: "This browser cannot access the camera.",
+      })
+      return
+    }
+
+    stopScanner()
     setScanning(true)
     setResult(null)
 
     try {
       const codeReader = new BrowserQRCodeReader()
-      codeReaderRef.current = codeReader
+      const stream = await requestCameraStream()
+      streamRef.current = stream
 
-      const videoInputDevices = await BrowserQRCodeReader.listVideoInputDevices()
+      if (!videoRef.current) {
+        throw new Error("Video preview is unavailable")
+      }
 
-      if (videoInputDevices.length === 0) {
-        setResult({
-          success: false,
-          message: "No camera found",
-        })
+      videoRef.current.setAttribute("playsinline", "true")
+      videoRef.current.muted = true
+      videoRef.current.srcObject = stream
+      await videoRef.current.play().catch(() => undefined)
+
+      controlsRef.current = await codeReader.decodeFromStream(stream, videoRef.current, async (scanResult) => {
+        if (!scanResult || processingRef.current) {
+          return
+        }
+
+        processingRef.current = true
+        setLoading(true)
         setScanning(false)
-        return
-      }
+        teardownCamera()
 
-      const selectedDeviceId = videoInputDevices[0].deviceId
+        try {
+          const response = await fetch("/api/invites/scan", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ inviteCode: extractInviteCode(scanResult.getText()) }),
+          })
 
-      const controls = await codeReader.decodeFromVideoDevice(
-        selectedDeviceId,
-        videoRef.current!,
-        async (result, error) => {
-          if (result) {
-            const text = result.getText()
+          const data = await response.json()
 
-            // Extract invite code from URL
-            const urlMatch = text.match(/\/invite\/([a-zA-Z0-9_-]+)/)
-            const inviteCode = urlMatch ? urlMatch[1] : text
-
-            setLoading(true)
-
-            if (streamRef.current) {
-              streamRef.current.getTracks().forEach((track) => track.stop())
-            }
-
-            // Process the invite
-            const response = await fetch("/api/invites/scan", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ inviteCode }),
+          if (response.ok) {
+            setResult({
+              success: true,
+              message: "Check-in successful!",
+              attendeeName: data.attendeeName,
+              attendeeEmail: data.attendeeEmail,
+              eventTitle: data.eventTitle,
+              eventDate: data.eventDate,
+              eventLocation: data.eventLocation,
             })
-
-            const data = await response.json()
-            setLoading(false)
-
-            if (response.ok) {
-              setResult({
-                success: true,
-                message: "Check-in successful!",
-                attendeeName: data.attendeeName,
-                attendeeEmail: data.attendeeEmail,
-                eventTitle: data.eventTitle,
-                eventDate: data.eventDate,
-                eventLocation: data.eventLocation,
-              })
-            } else {
-              setResult({
-                success: false,
-                message: data.error || "Failed to process invite",
-              })
-            }
-
-            setScanning(false)
+          } else {
+            setResult({
+              success: false,
+              message: data.error || "Failed to process invite",
+            })
           }
-        },
-      )
-
-      if (videoRef.current && videoRef.current.srcObject) {
-        streamRef.current = videoRef.current.srcObject as MediaStream
-      }
+        } catch (error) {
+          console.error("Scanner request error:", error)
+          setResult({
+            success: false,
+            message: "Failed to process invite",
+          })
+        } finally {
+          setLoading(false)
+          processingRef.current = false
+        }
+      })
     } catch (err) {
       console.error("Scanner error:", err)
+      teardownCamera()
+      processingRef.current = false
+      setLoading(false)
+      setScanning(false)
       setResult({
         success: false,
-        message: "Failed to start camera",
+        message: "Failed to open the camera. Please allow camera access on your phone and try again.",
       })
-      setScanning(false)
     }
-  }
-
-  function stopScanning() {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop())
-      streamRef.current = null
-    }
-    if (videoRef.current) {
-      videoRef.current.srcObject = null
-    }
-    setScanning(false)
   }
 
   function resetScanner() {
     setResult(null)
-    setScanning(false)
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop())
-      streamRef.current = null
-    }
-    if (videoRef.current) {
-      videoRef.current.srcObject = null
-    }
+    stopScanner()
   }
 
   return (
     <Card>
       <CardContent className="p-6">
+        {deviceChecked && !isMobile && !scanning && !loading && (
+          <Alert className="mb-6">
+            <AlertDescription>
+              This scanner works on mobile only. Open this page on your phone to launch the camera and scan QR codes.
+            </AlertDescription>
+          </Alert>
+        )}
+
         {!scanning && !result && (
           <div className="text-center py-12">
             <div className="mx-auto mb-6 h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-              <Camera className="h-8 w-8 text-primary" />
+              {loading ? <Loader2 className="h-8 w-8 animate-spin text-primary" /> : <Camera className="h-8 w-8 text-primary" />}
             </div>
-            <h3 className="text-lg font-semibold mb-2">Ready to Scan</h3>
-            <p className="text-muted-foreground mb-6">Position the QR code within the camera frame</p>
-            <Button onClick={startScanning} size="lg">
+            <h3 className="text-lg font-semibold mb-2">{loading ? "Processing Scan" : "Ready to Scan"}</h3>
+            <p className="text-muted-foreground mb-6">
+              {loading
+                ? "Please wait while we check in the guest."
+                : isMobile
+                  ? "Open the rear camera and position the QR code within the frame."
+                  : "Use a mobile device to open the camera and scan a QR code."}
+            </p>
+            <Button onClick={startScanning} size="lg" disabled={!isMobile || loading}>
               <Camera className="h-5 w-5 mr-2" />
-              Start Scanning
+              Open Camera
             </Button>
           </div>
         )}
@@ -159,15 +253,15 @@ export function QRScanner() {
         {scanning && (
           <div className="space-y-4">
             <div className="relative aspect-square bg-muted rounded-lg overflow-hidden">
-              <video ref={videoRef} className="w-full h-full object-cover" />
+              <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
               {loading && (
                 <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
                   <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
               )}
             </div>
-            <Button onClick={stopScanning} variant="outline" className="w-full bg-transparent">
-              Cancel Scanning
+            <Button onClick={stopScanner} variant="outline" className="w-full bg-transparent">
+              Close Camera
             </Button>
           </div>
         )}

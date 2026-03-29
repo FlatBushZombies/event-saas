@@ -1,5 +1,6 @@
 "use client"
 
+import { useAuth } from "@clerk/nextjs"
 import Link from "next/link"
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
@@ -61,6 +62,9 @@ function AnimatedSection({
 
 export default function HomePage() {
   const [scrollY, setScrollY] = useState(0)
+  const { isLoaded, isSignedIn } = useAuth()
+  const accessSpaceHref = isLoaded && isSignedIn ? "/dashboard" : "/sign-in"
+  const accessSpaceLabel = isLoaded && isSignedIn ? "Dashboard" : "Sign In"
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY)
@@ -74,8 +78,7 @@ export default function HomePage() {
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-lg">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2">
-            <Heart className="h-5 w-5 text-primary" />
-            <span className="font-serif text-xl font-medium text-foreground">Wedspace</span>
+            <Image src="/logo.png" alt="Wedspace Logo" width={120} height={120} className="object-cover" />
           </Link>
           <div className="hidden items-center gap-8 md:flex">
             <Link href="#features" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
@@ -89,8 +92,8 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-              Sign In
+            <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+              <Link href={accessSpaceHref}>{accessSpaceLabel}</Link>
             </Button>
             <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
               Get Started

@@ -120,86 +120,88 @@ export function CreateEventDialog({ userId }: CreateEventDialogProps) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="overflow-hidden rounded-[1.8rem] border-border/60 p-0 sm:max-w-[560px]">
-        <div className="h-1.5 bg-gradient-to-r from-primary/10 via-primary/50 to-primary/10" />
-        <DialogHeader className="px-6 pt-6">
-          <div className="inline-flex w-fit items-center gap-2 rounded-full border border-primary/15 bg-primary/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-primary">
-            <Sparkles className="h-3.5 w-3.5" />
-            Wedding Chapter
-          </div>
-          <DialogTitle className="pt-3 font-serif text-3xl">Create a new chapter</DialogTitle>
-          <DialogDescription className="max-w-md leading-relaxed">
-            Wedding day, welcome dinner, anniversary weekend, or another celebration that belongs in your story.
-          </DialogDescription>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit} className="space-y-5 px-6 pb-6">
-          <div className="grid gap-2">
-            <Label>Start with a chapter style</Label>
-            <div className="flex flex-wrap gap-2">
-              {chapterTemplates.map((template) => (
-                <button
-                  key={template.id}
-                  type="button"
-                  onClick={() => applyTemplate(template.id)}
-                  className={[
-                    "rounded-full border px-3 py-2 text-sm transition",
-                    selectedTemplateId === template.id
-                      ? "border-primary/30 bg-primary/10 text-primary shadow-sm"
-                      : "border-border/60 bg-white text-muted-foreground hover:border-primary/20 hover:text-foreground",
-                  ].join(" ")}
-                >
-                  {template.label}
-                </button>
-              ))}
+      <DialogContent className="overflow-hidden rounded-[1.8rem] border-border/60 p-0 sm:max-w-[560px] max-h-[90vh] flex flex-col">
+        <div className="h-1.5 bg-gradient-to-r from-primary/10 via-primary/50 to-primary/10 shrink-0" />
+        <div className="overflow-y-auto flex-1 flex flex-col">
+          <DialogHeader className="px-6 pt-6">
+            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-primary/15 bg-primary/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-primary">
+              <Sparkles className="h-3.5 w-3.5" />
+              Wedding Chapter
             </div>
-            <p className="text-xs leading-relaxed text-muted-foreground">
-              Pick a starting point, then tailor the chapter however you like. This keeps second events feeling connected instead of recreated from scratch.
-            </p>
-          </div>
+            <DialogTitle className="pt-3 font-serif text-3xl">Create a new chapter</DialogTitle>
+            <DialogDescription className="max-w-md leading-relaxed">
+              Wedding day, welcome dinner, anniversary weekend, or another celebration that belongs in your story.
+            </DialogDescription>
+          </DialogHeader>
 
-          <div className="grid gap-2">
-            <Label htmlFor="title">Chapter Name</Label>
-            <Input
-              id="title"
-              name="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Wedding Day, Welcome Dinner, Anniversary Weekend..."
-              required
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="space-y-5 px-6 pb-6 pt-2">
+            <div className="grid gap-2">
+              <Label>Start with a chapter style</Label>
+              <div className="flex flex-wrap gap-2">
+                {chapterTemplates.map((template) => (
+                  <button
+                    key={template.id}
+                    type="button"
+                    onClick={() => applyTemplate(template.id)}
+                    className={[
+                      "rounded-full border px-3 py-2 text-sm transition",
+                      selectedTemplateId === template.id
+                        ? "border-primary/30 bg-primary/10 text-primary shadow-sm"
+                        : "border-border/60 bg-white text-muted-foreground hover:border-primary/20 hover:text-foreground",
+                    ].join(" ")}
+                  >
+                    {template.label}
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                Pick a starting point, then tailor the chapter however you like. This keeps second events feeling connected instead of recreated from scratch.
+              </p>
+            </div>
 
-          <div className="grid gap-2">
-            <Label htmlFor="description">What should guests know?</Label>
-            <Textarea
-              id="description"
-              name="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Share the tone, dress note, arrival details, or why this moment matters."
-              rows={4}
-            />
-          </div>
+            <div className="grid gap-2">
+              <Label htmlFor="title">Chapter Name</Label>
+              <Input
+                id="title"
+                name="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Wedding Day, Welcome Dinner, Anniversary Weekend..."
+                required
+              />
+            </div>
 
-          <div className="grid gap-2">
-            <Label htmlFor="location">Location</Label>
-            <Input id="location" name="location" placeholder="Venue name or address" />
-          </div>
+            <div className="grid gap-2">
+              <Label htmlFor="description">What should guests know?</Label>
+              <Textarea
+                id="description"
+                name="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Share the tone, dress note, arrival details, or why this moment matters."
+                rows={4}
+              />
+            </div>
 
-          <div className="grid gap-2">
-            <Label htmlFor="event_date">Date & Time</Label>
-            <Input id="event_date" name="event_date" type="datetime-local" required />
-          </div>
+            <div className="grid gap-2">
+              <Label htmlFor="location">Location</Label>
+              <Input id="location" name="location" placeholder="Venue name or address" />
+            </div>
 
-          <div className="rounded-[1.4rem] border border-primary/10 bg-primary/5 p-4 text-sm leading-relaxed text-muted-foreground">
-            Tip: the same couple can create more than one chapter over time, like the wedding day now and an anniversary celebration later.
-          </div>
+            <div className="grid gap-2">
+              <Label htmlFor="event_date">Date & Time</Label>
+              <Input id="event_date" name="event_date" type="datetime-local" required />
+            </div>
 
-          <Button type="submit" className="w-full rounded-full shadow-sm" disabled={loading}>
-            {loading ? "Creating..." : "Create Chapter"}
-          </Button>
-        </form>
+            <div className="rounded-[1.4rem] border border-primary/10 bg-primary/5 p-4 text-sm leading-relaxed text-muted-foreground">
+              Tip: the same couple can create more than one chapter over time, like the wedding day now and an anniversary celebration later.
+            </div>
+
+            <Button type="submit" className="w-full rounded-full shadow-sm" disabled={loading}>
+              {loading ? "Creating..." : "Create Chapter"}
+            </Button>
+          </form>
+        </div>
       </DialogContent>
     </Dialog>
   )

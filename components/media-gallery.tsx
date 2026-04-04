@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import useSWR from "swr"
 import type { Media } from "@/lib/types"
-import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -39,19 +38,15 @@ export function MediaGallery({ eventId, inviteCode, canDelete = false }: MediaGa
 
   function getTileClass(index: number) {
     const pattern = index % 8
-
     if (pattern === 2 || pattern === 5) {
       return "md:col-span-2 md:row-span-2"
     }
-
     if (pattern === 7) {
       return "md:col-span-2"
     }
-
     return ""
   }
 
-  // Load thumbnails for all media items
   useEffect(() => {
     if (media.length > 0) {
       media.forEach((item) => {
@@ -148,7 +143,7 @@ export function MediaGallery({ eventId, inviteCode, canDelete = false }: MediaGa
 
   if (error) {
     return (
-      <div className="text-center py-8 text-muted-foreground">
+      <div className="text-center py-8" style={{ color: "#6b6560" }}>
         Failed to load media
       </div>
     )
@@ -157,43 +152,80 @@ export function MediaGallery({ eventId, inviteCode, canDelete = false }: MediaGa
   if (!data) {
     return (
       <div className="flex justify-center py-8">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <Loader2 className="h-8 w-8 animate-spin" style={{ color: "#b97971" }} />
       </div>
     )
   }
 
   if (media.length === 0) {
     return (
-      <Card>
-        <CardContent className="py-12 text-center">
-          <ImageIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-          <h3 className="text-lg font-semibold mb-2">No media yet</h3>
-          <p className="text-sm text-muted-foreground">
-            {canDelete 
-              ? "Upload photos and videos to share with your attendees"
-              : "No media has been shared for this event yet"}
-          </p>
-        </CardContent>
-      </Card>
+      <div 
+        className="py-12 text-center rounded-2xl"
+        style={{
+          background: "linear-gradient(135deg, rgba(185, 121, 113, 0.03), rgba(255,252,251,0.9))",
+          border: "1px solid rgba(185, 121, 113, 0.08)",
+        }}
+      >
+        <div 
+          className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
+          style={{
+            background: "linear-gradient(135deg, rgba(185, 121, 113, 0.08), rgba(185, 121, 113, 0.03))",
+            border: "1px solid rgba(185, 121, 113, 0.08)",
+          }}
+        >
+          <ImageIcon className="h-8 w-8" style={{ color: "#c9918a" }} />
+        </div>
+        <h3 className="text-lg font-semibold mb-2" style={{ color: "#2d2926" }}>No media yet</h3>
+        <p className="text-sm" style={{ color: "#6b6560" }}>
+          {canDelete 
+            ? "Upload photos and videos to share with your attendees"
+            : "No media has been shared for this event yet"}
+        </p>
+      </div>
     )
   }
 
   return (
     <>
-      <div className="space-y-4">
-        <div className="flex flex-col gap-3 rounded-[1.75rem] border border-border/60 bg-gradient-to-br from-white to-primary/5 p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <style>{`
+        @keyframes mediaFadeIn {
+          from { opacity: 0; transform: translateY(12px) scale(0.98); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
+
+      <div className="space-y-5">
+        <div 
+          className="flex flex-col gap-4 rounded-2xl p-5 sm:flex-row sm:items-center sm:justify-between"
+          style={{
+            background: "linear-gradient(135deg, rgba(255,252,251,0.98), rgba(185, 121, 113, 0.03))",
+            border: "1px solid rgba(185, 121, 113, 0.08)",
+            boxShadow: "0 4px 12px rgba(185, 121, 113, 0.04)",
+          }}
+        >
           <div>
-            <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-primary">
+            <p 
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase"
+              style={{ color: "#a66b64", letterSpacing: "0.18em" }}
+            >
               <Sparkles className="h-3.5 w-3.5" />
               Explore the celebration
             </p>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="mt-2 text-sm" style={{ color: "#6b6560" }}>
               {media.length} shared {media.length === 1 ? "moment" : "moments"} in an always-on event feed.
             </p>
           </div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-white px-4 py-2 text-sm text-primary shadow-sm">
+          <div 
+            className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm"
+            style={{
+              background: "white",
+              border: "1px solid rgba(185, 121, 113, 0.12)",
+              color: "#a66b64",
+              boxShadow: "0 2px 8px rgba(185, 121, 113, 0.06)",
+            }}
+          >
             <Clock3 className="h-4 w-4" />
-            <span>Newest moments first</span>
+            <span className="font-medium">Newest moments first</span>
           </div>
         </div>
 
@@ -203,14 +235,20 @@ export function MediaGallery({ eventId, inviteCode, canDelete = false }: MediaGa
             key={item.id}
             type="button"
             className={[
-              "group relative overflow-hidden rounded-[1.75rem] border border-white/60 bg-muted/30 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30",
+              "group relative overflow-hidden rounded-2xl text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2",
               getTileClass(index),
             ].join(" ")}
+            style={{
+              background: "rgba(185, 121, 113, 0.03)",
+              border: "1px solid rgba(185, 121, 113, 0.1)",
+              boxShadow: "0 4px 12px rgba(185, 121, 113, 0.04)",
+              animation: `mediaFadeIn 0.5s ease ${index * 0.05}s both`,
+            }}
             onClick={() => handleMediaClick(item)}
           >
-            <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/65" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.2),transparent_45%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-            <div className="relative flex h-full items-center justify-center overflow-hidden bg-muted">
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50 z-10" style={{ background: "linear-gradient(180deg, transparent 40%, rgba(110, 70, 65, 0.6) 100%)" }} />
+            <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 z-10" />
+            <div className="relative flex h-full items-center justify-center overflow-hidden" style={{ background: "#fdf8f7" }}>
               {thumbnailUrls[item.id] && item.file_type.startsWith("image/") ? (
                 <img
                   src={thumbnailUrls[item.id]}
@@ -226,16 +264,22 @@ export function MediaGallery({ eventId, inviteCode, canDelete = false }: MediaGa
               ) : (
                 <>
                   {item.file_type.startsWith("image/") ? (
-                    <ImageIcon className="h-12 w-12 text-muted-foreground" />
+                    <ImageIcon className="h-12 w-12" style={{ color: "#d4a59a" }} />
                   ) : (
-                    <Film className="h-12 w-12 text-muted-foreground" />
+                    <Film className="h-12 w-12" style={{ color: "#d4a59a" }} />
                   )}
                 </>
               )}
             </div>
 
-            <div className="absolute left-3 right-3 top-3 flex items-start justify-between gap-3">
-              <div className="inline-flex items-center gap-1 rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur-md">
+            <div className="absolute left-3 right-3 top-3 flex items-start justify-between gap-3 z-20">
+              <div 
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium text-white"
+                style={{
+                  background: "rgba(138, 87, 80, 0.75)",
+                  backdropFilter: "blur(8px)",
+                }}
+              >
                 {item.file_type.startsWith("video/") ? (
                   <>
                     <Play className="h-3 w-3 fill-current" />
@@ -253,7 +297,8 @@ export function MediaGallery({ eventId, inviteCode, canDelete = false }: MediaGa
                 <Button
                   size="icon"
                   variant="destructive"
-                  className="h-8 w-8 bg-black/60 backdrop-blur-md opacity-0 transition-opacity group-hover:opacity-100"
+                  className="h-8 w-8 rounded-full backdrop-blur-md opacity-0 transition-all group-hover:opacity-100 hover:bg-red-500"
+                  style={{ background: "rgba(138, 87, 80, 0.6)" }}
                   onClick={(e) => {
                     e.stopPropagation()
                     handleDelete(item.id)
@@ -269,10 +314,17 @@ export function MediaGallery({ eventId, inviteCode, canDelete = false }: MediaGa
               )}
             </div>
 
-            <div className="absolute inset-x-0 bottom-0 p-4">
-              <div className="rounded-[1.25rem] border border-white/15 bg-black/45 p-3 text-white backdrop-blur-md">
+            <div className="absolute inset-x-0 bottom-0 p-3 z-20">
+              <div 
+                className="rounded-xl p-3 text-white"
+                style={{
+                  background: "rgba(138, 87, 80, 0.55)",
+                  backdropFilter: "blur(12px)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
+              >
                 <p className="truncate text-sm font-medium">{item.caption || item.file_name}</p>
-                <p className="mt-1 text-xs text-white/75">
+                <p className="mt-1 text-xs" style={{ color: "#f5e6e3" }}>
                   {format(new Date(item.created_at), "MMM d 'at' h:mm a")}
                 </p>
               </div>
@@ -283,16 +335,35 @@ export function MediaGallery({ eventId, inviteCode, canDelete = false }: MediaGa
       </div>
 
       <Dialog open={!!selectedMedia} onOpenChange={handleClosePreview}>
-        <DialogContent className="max-w-5xl overflow-hidden border-border/60 bg-background/95 p-0">
-          <DialogHeader className="border-b border-border/60 px-6 py-4">
-            <DialogTitle className="truncate pr-4 text-xl font-serif">{selectedMedia?.file_name}</DialogTitle>
+        <DialogContent 
+          className="max-w-5xl overflow-hidden p-0"
+          style={{
+            background: "rgba(255,252,251,0.99)",
+            backdropFilter: "blur(24px)",
+            border: "1px solid rgba(185, 121, 113, 0.12)",
+            borderRadius: "24px",
+          }}
+        >
+          <DialogHeader 
+            className="px-6 py-4"
+            style={{ borderBottom: "1px solid rgba(185, 121, 113, 0.08)" }}
+          >
+            <DialogTitle 
+              className="truncate pr-4 text-xl"
+              style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400, color: "#2d2926" }}
+            >
+              {selectedMedia?.file_name}
+            </DialogTitle>
           </DialogHeader>
 
           <div className="grid gap-0 md:grid-cols-[minmax(0,1fr)_320px]">
-            <div className="relative min-h-64 bg-black/5 p-4 md:p-6">
+            <div 
+              className="relative min-h-64 p-4 md:p-6"
+              style={{ background: "linear-gradient(135deg, rgba(185, 121, 113, 0.02), rgba(255,252,251,0.95))" }}
+            >
             {loadingUrl ? (
               <div className="flex items-center justify-center h-64">
-                <Loader2 className="h-8 w-8 animate-spin" />
+                <Loader2 className="h-8 w-8 animate-spin" style={{ color: "#b97971" }} />
               </div>
             ) : mediaUrl ? (
               <>
@@ -300,47 +371,58 @@ export function MediaGallery({ eventId, inviteCode, canDelete = false }: MediaGa
                   <img
                     src={mediaUrl || "/placeholder.svg"}
                     alt={selectedMedia?.caption || selectedMedia?.file_name}
-                    className="w-full max-h-[70vh] object-contain rounded-[1.5rem]"
+                    className="w-full max-h-[70vh] object-contain rounded-2xl"
                   />
                 )}
                 {selectedMedia?.file_type.startsWith("video/") && (
                   <video
                     src={mediaUrl}
                     controls
-                    className="w-full max-h-[70vh] rounded-[1.5rem]"
+                    className="w-full max-h-[70vh] rounded-2xl"
                   />
                 )}
               </>
             ) : (
-              <div className="flex items-center justify-center h-64 text-muted-foreground">
+              <div className="flex items-center justify-center h-64" style={{ color: "#6b6560" }}>
                 Failed to load media
               </div>
             )}
             </div>
 
-            <div className="space-y-4 px-6 py-5">
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            <div 
+              className="space-y-5 px-6 py-5"
+              style={{ borderLeft: "1px solid rgba(185, 121, 113, 0.08)" }}
+            >
+              <div 
+                className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold uppercase"
+                style={{
+                  background: "linear-gradient(135deg, rgba(185, 121, 113, 0.08), rgba(185, 121, 113, 0.03))",
+                  border: "1px solid rgba(185, 121, 113, 0.12)",
+                  color: "#a66b64",
+                  letterSpacing: "0.16em",
+                }}
+              >
                 <Sparkles className="h-3.5 w-3.5" />
                 Explore Detail
               </div>
 
               {selectedMedia?.caption ? (
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Caption</p>
-                  <p className="mt-2 text-sm leading-relaxed text-foreground/85">{selectedMedia.caption}</p>
+                  <p className="text-xs font-semibold uppercase mb-2" style={{ letterSpacing: "0.16em", color: "#6b6560" }}>Caption</p>
+                  <p className="text-sm leading-relaxed" style={{ color: "#2d2926" }}>{selectedMedia.caption}</p>
                 </div>
               ) : null}
 
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Shared</p>
-                <p className="mt-2 text-sm text-foreground/80">
+                <p className="text-xs font-semibold uppercase mb-2" style={{ letterSpacing: "0.16em", color: "#6b6560" }}>Shared</p>
+                <p className="text-sm" style={{ color: "#2d2926" }}>
                   {selectedMedia && format(new Date(selectedMedia.created_at), "EEEE, MMMM d 'at' h:mm a")}
                 </p>
               </div>
 
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Format</p>
-                <p className="mt-2 text-sm text-foreground/80">
+                <p className="text-xs font-semibold uppercase mb-2" style={{ letterSpacing: "0.16em", color: "#6b6560" }}>Format</p>
+                <p className="text-sm" style={{ color: "#2d2926" }}>
                   {selectedMedia?.file_type.startsWith("video/") ? "Video memory" : "Photo memory"}
                 </p>
               </div>
